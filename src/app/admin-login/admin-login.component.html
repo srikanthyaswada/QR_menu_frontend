@@ -1,0 +1,107 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success px-3">
+  <span class="navbar-brand fw-bold body" routerLink="/">QR MENU </span>
+</nav>
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="card p-8">
+    <div class="container p-3">
+      <div class="position-fixed top-0 end-0 p-3">
+        <div
+          *ngIf="toastMessage"
+          class="toast align-items-center text-white show"
+          [ngClass]="{
+            'bg-success': toastType === 'success',
+            'bg-warning': toastType === 'warning',
+            'bg-danger': toastType === 'error'
+          }"
+          role="alert"
+        >
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ toastMessage }}
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              (click)="toastMessage = null"
+            ></button>
+          </div>
+        </div>
+      </div>
+      <h2 class="title mb-3 p-2 text-center fw-bold text-success">Admin Login</h2>
+      <!-- Form -->
+      <form [formGroup]="AdminForm" class="mb-3">
+        <!-- Email -->
+        <div class="row mb-3 align-items-center">
+          <label for="username" class="col-sm-3 col-form-label">username</label>
+          <div class="col-sm-11">
+            <input type="username" id="username" formControlName="username" class="form-control" />
+            <div
+              *ngIf="
+                AdminForm.controls['username']?.touched && AdminForm.controls['username']?.invalid
+              "
+            >
+              <!-- <small
+                *ngIf="AdminForm.controls['admin_mail']?.errors?.['required']"
+                class="text-danger"
+                >Email is required</small
+              >
+              <small
+                *ngIf="AdminForm.controls['admin_mail']?.errors?.['email']"
+                class="text-danger"
+                >Invalid email format</small
+              > -->
+            </div>
+          </div>
+        </div>
+        <!-- password -->
+        <div class="row mb-3 align-items-center">
+          <label for="password" class="col-sm-3 col-form-label">Password</label>
+          <div class="col-sm-11">
+            <div class="input-group">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                class="form-control"
+              />
+
+              <button type="button" class="btn btn1" (click)="togglePassword()">
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div
+              *ngIf="
+                AdminForm.controls['password']?.touched && AdminForm.controls['password']?.invalid
+              "
+            >
+              <small
+                *ngIf="AdminForm.controls['password']?.errors?.['required']"
+                class="text-danger"
+                >Password is required</small
+              >
+              <small
+                *ngIf="AdminForm.controls['password']?.errors?.['minLength']"
+                class="text-danger"
+                >Minimum 6 characters</small
+              >
+            </div>
+          </div>
+          <a routerLink="/forgot-password">forgot password?</a>
+
+          <div class="text-center mt-4 d-flex gap-3">
+            <button type="button" class="btn btn-success w-75 g-2" (click)="adminLogin()">
+              Login
+            </button>
+
+            <button type="button" class="btn btn-success" routerLink="/">
+              <i class="bi bi-box-arrow-in-left"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

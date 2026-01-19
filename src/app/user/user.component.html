@@ -1,0 +1,66 @@
+<div class="page-container">
+  <!-- QR SECTION -->
+  <div *ngIf="!showMenu" class="qr-box">
+    <img [src]="qrImage" (click)="scanQR()" />
+    <p>Scan QR to View Menu</p>
+  </div>
+
+  <div class="page-center">
+    <div class="card shadow-lg p-4 select-card">
+      <h5 class="fw-bold text-success mb-3 text-center">Select Items</h5>
+
+      <div *ngFor="let cat of menuItems" class="item-row">
+        <p >
+          {{ cat.categoryId?.name }}
+        </p>
+
+        <span class="item-name">{{ cat.name }}</span>
+
+        <input
+          type="checkbox"
+          class="form-check-input category-checkbox"
+          [(ngModel)]="cat.selected"
+        />
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-success px-4" (click)="sendOrder()">Send Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop-custom" *ngIf="isModalOpen">
+  <div class="order-modal card p-4 shadow-lg">
+    <h5 class="fw-bold text-success text-center mb-3">Selected Items</h5>
+
+    <!-- Selected Items -->
+    <div *ngFor="let cat of selectedCategories" class="mb-2">✔ {{ cat.name }}</div>
+
+    <hr />
+
+    <!-- Customer Details -->
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control mb-2"
+        placeholder="Customer Name"
+        [(ngModel)]="customer.name"
+      />
+
+      <input
+        type="tel"
+        class="form-control"
+        placeholder="Mobile Number"
+        [(ngModel)]="customer.mobile"
+      />
+    </div>
+
+    <!-- Actions -->
+    <div class="text-center">
+      <button class="btn btn-success me-2" (click)="submitOrder()">Submit</button>
+      <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="container-fluid">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success px-3 fixed-top">
+    <a class="navbar-brand fw-bold text-white" routerLink="/home"> QR MENU </a>
+
+    <div class="ms-auto dropdown">
+      <a class="nav-link text-white dropdown-toggle" role="button" data-bs-toggle="dropdown">
+        <i class="bi bi-person-circle fs-4"></i>
+      </a>
+
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" routerLink="#"> <i class="bi bi-person me-2"></i> Profile </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div
+      *ngIf="toastMessage"
+      class="toast show text-white"
+      [ngClass]="{
+        'bg-success': toastType === 'success',
+        'bg-warning': toastType === 'warning',
+        'bg-danger': toastType === 'error'
+      }"
+    >
+      <div class="toast-body d-flex justify-content-between">
+        {{ toastMessage }}
+        <button class="btn-close btn-close-white" (click)="toastMessage = null"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row pt-5 mt-4">
+    <div class="col-md-2 p-4 bg-light min-vh-100">
+      <div class="d-flex flex-column gap-3 mt-3">
+        <a class="btn side-btn text-dark" routerLink="category" routerLinkActive="active-btn">
+          <i class="bi bi-plus-circle me-2"></i> Categories
+        </a>
+
+        <a class="btn side-btn text-dark" routerLink="menu" routerLinkActive="active-btn">
+          <i class="bi bi-list-check me-2"></i> Menu
+        </a>
+
+        <!-- <a
+          class="btn side-btn text-dark"
+          routerLink="/SuperAdminView/view_business_type"
+          routerLinkActive="active-btn"
+          
+        >
+          <i class="bi bi-file-earmark-bar-graph me-2"></i> QR CODE
+        </a> -->
+      </div>
+    </div>
+
+    <div class="col-md-10 p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="logoutModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p class="fs-5 mb-0">Are you sure you want to logout?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" data-bs-dismiss="modal" (click)="logout()">
+          Yes, Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
