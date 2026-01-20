@@ -1,1 +1,79 @@
 /* You can add global styles to this file, and also import other style files */
+.toast-container.toast-top-right {
+  position: fixed !important;
+  top: 80px !important;
+  right: 12px !important; /* top-right positioning */
+  left: auto !important;
+  transform: none !important;
+  z-index: 99999 !important;
+  max-width: 420px;
+  padding: 0;
+}
+
+.custom-toast {
+  display: flex !important;             /* Flex layout */
+  align-items: center !important;       /* Vertically center */
+  justify-content: space-between !important; /* Space between message and close button */
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  width: 100% !important;
+  min-width: 380px !important;
+  max-width: 420px !important;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap !important;       /* Single line */
+  overflow: hidden;
+  text-overflow: ellipsis;               /* Truncate overflow text */
+}
+
+.custom-toast .toast-title,
+.custom-toast .toast-message {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-toast .toast-close-button {
+  margin-left: 12px !important;
+  flex-shrink: 0;
+  font-size: 18px !important;
+  opacity: 0.7;
+  cursor: pointer;
+  color: inherit !important;
+  background: none !important;   
+  border: none !important;       
+  box-shadow: none !important;  
+  padding: 0 !important;         
+}
+
+.custom-toast .toast-close-button:hover {
+  opacity: 1;
+  background: none !important;   
+  box-shadow: none !important;
+}
+
+
+.toast-error.custom-toast {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+.toast-success.custom-toast {
+  background-color: #198754 !important;
+  color: #fff !important;
+}
+
+.toast-info.custom-toast {
+  background-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+.toast-warning.custom-toast {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}

@@ -29,7 +29,7 @@
       [ngClass]="{
         'bg-success': toastType === 'success',
         'bg-warning': toastType === 'warning',
-        'bg-danger': toastType === 'error'
+        'bg-danger': toastType === 'error',
       }"
     >
       <div class="toast-body d-flex justify-content-between">
@@ -40,7 +40,7 @@
   </div>
 
   <div class="row pt-5 mt-4">
-    <div class="col-md-2 p-4 bg-light min-vh-100">
+    <div class="col-md-2 p-4">
       <div class="d-flex flex-column gap-3 mt-3">
         <a class="btn side-btn text-dark" routerLink="category" routerLinkActive="active-btn">
           <i class="bi bi-plus-circle me-2"></i> Categories
@@ -49,15 +49,6 @@
         <a class="btn side-btn text-dark" routerLink="menu" routerLinkActive="active-btn">
           <i class="bi bi-list-check me-2"></i> Menu
         </a>
-
-        <!-- <a
-          class="btn side-btn text-dark"
-          routerLink="/SuperAdminView/view_business_type"
-          routerLinkActive="active-btn"
-          
-        >
-          <i class="bi bi-file-earmark-bar-graph me-2"></i> QR CODE
-        </a> -->
       </div>
     </div>
 

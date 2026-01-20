@@ -10,6 +10,7 @@ import {
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
 import bootstrap from '../../main.server';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-menu',
@@ -24,10 +25,16 @@ export class MenuComponent implements OnInit {
   selectedId: any = null;
   editCategoryForm!: FormGroup;
   activeCategoryType: any[] = [];
-
+  toastMessage: string | null = null;
+  toastType: string | undefined;
   title: any;
 
-  constructor(private fb: FormBuilder, private router: Router, private api: QrmenuService) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private api: QrmenuService,
+    private toastr: ToastrService,
+  ) {}
 
   ngOnInit(): void {
     this.menuForm = this.fb.group({
@@ -42,8 +49,7 @@ export class MenuComponent implements OnInit {
   getmenu() {
     this.api.getmenu().subscribe({
       next: (res: any) => {
-        console.log(res);
-        this.categories = res.data;
+        this.categories = res?.data ? [...res.data] : [];
       },
       error: (err) => console.error(err),
     });
@@ -59,13 +65,38 @@ export class MenuComponent implements OnInit {
 
     this.menuForm.patchValue({
       name: category.name,
-     categoryId: category.categoryId._id
+      categoryId: category.categoryId._id,
     });
   }
 
+  // saveCategory() {
+  //   if (this.menuForm.invalid) {
+  //     console.log('FORM INVALID', this.menuForm.value);
+  //     return;
+  //   }
+
+  //   if (this.selectedId) {
+  //     this.api
+  //       .menuupdate({
+  //         id: this.selectedId,
+  //         ...this.menuForm.value,
+  //       })
+  //       .subscribe(() => {
+  //         this.getmenu();
+  //         this.resetForm();
+  //       });
+  //   } else {
+  //     this.api.menucreate(this.menuForm.value).subscribe(() => {
+  //       this.getmenu();
+  //       this.resetForm();
+  //       window.location.reload();
+  //     });
+  //   }
+  // }
   saveCategory() {
     if (this.menuForm.invalid) {
       console.log('FORM INVALID', this.menuForm.value);
+      this.toastr.error('Please fill all required fields', 'Error');
       return;
     }
 
@@ -75,18 +106,37 @@ export class MenuComponent implements OnInit {
           id: this.selectedId,
           ...this.menuForm.value,
         })
-        .subscribe(() => {
-          this.getmenu();
-          this.resetForm();
+        .subscribe({
+          next: (res: any) => {
+            const index = this.categories.findIndex((item) => item._id === this.selectedId);
+
+            if (index !== -1) {
+              this.categories[index] = res.data;
+              this.categories = [...this.categories];
+            }
+
+            this.resetForm();
+            this.toastr.success('Menu item updated successfully!', 'Success');
+          },
+          error: () => {
+            this.toastr.error('Failed to update menu item', 'Error');
+          },
         });
     } else {
-      this.api.menucreate(this.menuForm.value).subscribe(() => {
-        this.getmenu();
-        this.resetForm();
-        window.location.reload();
+      this.api.menucreate(this.menuForm.value).subscribe({
+        next: (res: any) => {
+          this.categories = [res.data, ...this.categories];
+
+          this.resetForm();
+          this.toastr.success('Menu item added successfully!', 'Success');
+        },
+        error: () => {
+          this.toastr.error('Failed to add menu item', 'Error');
+        },
       });
     }
   }
+
   loadCategories() {
     this.api.getCategories().subscribe({
       next: (res: any) => {
@@ -97,10 +147,16 @@ export class MenuComponent implements OnInit {
   }
 
   deleteCategory(id: string) {
-    if (!confirm('Delete this item?')) return;
+    this.api.menudelete(id).subscribe({
+      next: () => {
+        this.getmenu();
 
-    this.api.menudelete(id).subscribe(() => {
-      this.getmenu();
+        this.toastr.success('Menu item deleted successfully!', 'Success');
+      },
+      error: (err) => {
+        console.error('Error deleting menu item:', err);
+        this.toastr.error('Failed to delete menu item. Please try again.', 'Error');
+      },
     });
   }
 
@@ -139,9 +195,18 @@ export class MenuComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.api.menudelete(this.selectedId._id).subscribe(() => {
-      this.getmenu();
-      this.selectedId = null;
+    if (!this.selectedId) return;
+
+    this.api.menudelete(this.selectedId._id).subscribe({
+      next: () => {
+        this.categories = this.categories.filter((item) => item._id !== this.selectedId._id);
+
+        this.selectedId = null;
+        this.toastr.success('Menu item deleted successfully!', 'Success');
+      },
+      error: () => {
+        this.toastr.error('Failed to delete menu item', 'Error');
+      },
     });
   }
 }

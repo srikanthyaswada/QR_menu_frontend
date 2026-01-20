@@ -2,8 +2,8 @@
   <span class="navbar-brand fw-bold body" routerLink="/">QR MENU </span>
 </nav>
 
-<div class="d-flex justify-content-center align-items-center vh-100">
-  <div class="card p-8">
+<div class="d-flex justify-content-center align-items-center " style="min-height: calc(100vh - 56px);">
+  <div class="card p-8 mt-5 ">
     <div class="container p-3">
       <div class="position-fixed top-0 end-0 p-3">
         <div
@@ -31,7 +31,7 @@
       <h2 class="title mb-3 p-2 text-center fw-bold text-success">Admin Login</h2>
       <!-- Form -->
       <form [formGroup]="AdminForm" class="mb-3">
-        <!-- Email -->
+        
         <div class="row mb-3 align-items-center">
           <label for="username" class="col-sm-3 col-form-label">username</label>
           <div class="col-sm-11">
@@ -87,7 +87,7 @@
               >
             </div>
           </div>
-          <a routerLink="/forgot-password">forgot password?</a>
+      
 
           <div class="text-center mt-4 d-flex gap-3">
             <button type="button" class="btn btn-success w-75 g-2" (click)="adminLogin()">

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-category',
@@ -17,9 +18,6 @@ import { QrmenuService } from '../qrmenu.service';
   styleUrl: './admin-category.component.scss',
 })
 export class AdminCategoryComponent implements OnInit {
-  edit(_t29: any) {
-    throw new Error('Method not implemented.');
-  }
   categories: any[] = [];
   categoryForm!: FormGroup;
   newCategory: any = { name: '' };
@@ -28,45 +26,61 @@ export class AdminCategoryComponent implements OnInit {
     id: null,
     name: '',
   };
-
+  toastMessage: string | null = null;
+  toastType: string | undefined;
   isEdit = false;
   selectedCategoryId: any;
   selectedId: any;
-  constructor(private router: Router, private fb: FormBuilder, private api: QrmenuService, private cd: ChangeDetectorRef) {}
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private api: QrmenuService,
+    private cd: ChangeDetectorRef,
+    private toastr: ToastrService,
+  ) {}
 
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
       name: ['', Validators.required],
-      
     });
 
     this.getCategories();
   }
- getCategories() {
-  this.api.getAll().subscribe({
-    next: (res: any) => {
-      console.log('API RESPONSE ', res);
-      this.categories = res.data;
+  getCategories() {
+    this.api.getAll().subscribe({
+      next: (res: any) => {
+        console.log('API RESPONSE ', res);
+        this.categories = res.data;
 
-      
-      this.cd.detectChanges();
-    },
-    error: (err) => {
-      console.error('API ERROR ', err);
-    },
-  });
-}
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('API ERROR ', err);
+      },
+    });
+  }
 
   addCategory() {
     if (this.categoryForm.invalid) return;
 
-    this.api.create(this.categoryForm.value).subscribe(() => {
-      this.categoryForm.reset();
-      this.getCategories();
-      window.location.reload();
+    this.api.create(this.categoryForm.value).subscribe({
+      next: () => {
+        this.categoryForm.reset();
+        this.getCategories();
+        this.toastr.success('Category registered successfully!', 'Success');
+      },
+      error: (err) => {
+        console.error('Error creating category:', err);
+        this.toastr.error('Failed to register category. Please try again.', 'Error');
+      },
     });
   }
 
+  showToast(message: string, type: string = 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    setTimeout(() => (this.toastMessage = null), 1000);
+  }
   openAddModal() {
     this.isEdit = false;
     this.category = { id: null, name: '' };
@@ -94,15 +108,21 @@ export class AdminCategoryComponent implements OnInit {
   }
 
   deleteCategory(id: string) {
-    if (!confirm('Delete this category?')) return;
-
     this.api.delete(id).subscribe({
       next: () => {
-        console.log('Deleted successfully');
         this.getCategories();
-        window.location.reload();
+        this.toastr.success('Category deleted successfully!', 'Success');
       },
-      error: (err) => console.error(err),
+      error: (err) => {
+        console.error('Error deleting category:', err);
+        this.toastr.error('Failed to delete category. Please try again.', 'Error');
+      },
+    });
+  }
+  confirmDelete() {
+    this.api.delete(this.selectedId._id).subscribe(() => {
+      this.getCategories();
+      this.selectedId = null;
     });
   }
 }

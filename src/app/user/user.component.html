@@ -5,22 +5,23 @@
     <p>Scan QR to View Menu</p>
   </div>
 
-  <div class="page-center">
+  <div class="page-center" *ngIf="showMenu">
     <div class="card shadow-lg p-4 select-card">
       <h5 class="fw-bold text-success mb-3 text-center">Select Items</h5>
 
-      <div *ngFor="let cat of menuItems" class="item-row">
-        <p >
-          {{ cat.categoryId?.name }}
-        </p>
+      <div *ngFor="let category of groupedItems | keyvalue">
+        <h6 class="fw-bold text-success mt-3">
+          {{ category.key }}
+        </h6>
 
-        <span class="item-name">{{ cat.name }}</span>
+        <div
+          *ngFor="let item of $any(category.value)"
+          class="item-row d-flex justify-content-between align-items-center"
+        >
+          <span class="item-name">{{ item.name }}</span>
 
-        <input
-          type="checkbox"
-          class="form-check-input category-checkbox"
-          [(ngModel)]="cat.selected"
-        />
+          <input type="checkbox" class="form-check-input" [(ngModel)]="item.selected" />
+        </div>
       </div>
 
       <div class="text-center mt-4">
@@ -35,12 +36,9 @@
   <div class="order-modal card p-4 shadow-lg">
     <h5 class="fw-bold text-success text-center mb-3">Selected Items</h5>
 
-    <!-- Selected Items -->
     <div *ngFor="let cat of selectedCategories" class="mb-2">✔ {{ cat.name }}</div>
 
     <hr />
-
-    <!-- Customer Details -->
     <div class="mb-3">
       <input
         type="text"
@@ -57,7 +55,6 @@
       />
     </div>
 
-    <!-- Actions -->
     <div class="text-center">
       <button class="btn btn-success me-2" (click)="submitOrder()">Submit</button>
       <button class="btn btn-secondary" (click)="closeModal()">Close</button>

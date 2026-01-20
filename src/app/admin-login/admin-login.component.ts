@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-login',
@@ -22,7 +23,12 @@ export class AdminLoginComponent implements OnInit {
   AdminForm!: FormGroup;
   toastMessage: string | null = null;
   toastType: 'success' | 'error' | 'warning' = 'success';
-  constructor(private fb: FormBuilder, private router: Router, private api: QrmenuService) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private api: QrmenuService,
+    private toastr: ToastrService,
+  ) {}
   ngOnInit(): void {
     this.AdminForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -30,13 +36,13 @@ export class AdminLoginComponent implements OnInit {
     });
   }
   adminLogin() {
-  if (this.AdminForm.invalid) {
+    if (this.AdminForm.invalid) {
       this.showToast('Please enter valid credentials', 'warning');
       this.AdminForm.markAllAsTouched();
       return;
     }
 
-  this.api.AdminLogin(this.AdminForm.value).subscribe({
+    this.api.AdminLogin(this.AdminForm.value).subscribe({
       next: (res: any) => {
         console.log(res, 'Admin Login Success');
         // if (res) {
@@ -54,10 +60,7 @@ export class AdminLoginComponent implements OnInit {
         console.error(' admin login failed', err);
 
         if (err.status === 403) {
-          this.showToast(
-            'Your account is inactive. Please contact system admin.',
-            'warning'
-          );
+          this.showToast('Your account is inactive. Please contact system admin.', 'warning');
         } else if (err.status === 401) {
           this.showToast('Invalid email or password.', 'warning');
         } else if (err.status === 500) {
@@ -71,10 +74,7 @@ export class AdminLoginComponent implements OnInit {
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
-   showToast(
-    message: string,
-    type: 'success' | 'error' | 'warning' = 'success'
-  ) {
+  showToast(message: string, type: 'success' | 'error' | 'warning' = 'success') {
     this.toastMessage = message;
     this.toastType = type;
     setTimeout(() => (this.toastMessage = null), 1500);
