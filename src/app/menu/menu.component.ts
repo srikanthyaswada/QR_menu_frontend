@@ -29,6 +29,8 @@ export class MenuComponent implements OnInit {
   toastType: string | undefined;
   title: any;
 
+  isEdit: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -38,10 +40,8 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.menuForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       categoryId: ['', Validators.required],
-      // isAvailable: ['', Validators.required],
-      // createdAt: ['', Validators.required],
     });
     this.getmenu();
     this.loadCategories();
@@ -62,7 +62,7 @@ export class MenuComponent implements OnInit {
 
   edit(category: any) {
     this.selectedId = category._id;
-
+    this.isEdit = true;
     this.menuForm.patchValue({
       name: category.name,
       categoryId: category.categoryId._id,
@@ -96,6 +96,7 @@ export class MenuComponent implements OnInit {
   saveCategory() {
     if (this.menuForm.invalid) {
       console.log('FORM INVALID', this.menuForm.value);
+      this.menuForm.markAllAsTouched();
       this.toastr.error('Please fill all required fields', 'Error');
       return;
     }
@@ -111,7 +112,15 @@ export class MenuComponent implements OnInit {
             const index = this.categories.findIndex((item) => item._id === this.selectedId);
 
             if (index !== -1) {
-              this.categories[index] = res.data;
+              const selectedCategory = this.activeCategoryType.find(
+                (c) => c._id === res.data.categoryId,
+              );
+
+              this.categories[index] = {
+                ...res.data,
+                categoryId: selectedCategory,
+              };
+
               this.categories = [...this.categories];
             }
 
@@ -125,16 +134,33 @@ export class MenuComponent implements OnInit {
     } else {
       this.api.menucreate(this.menuForm.value).subscribe({
         next: (res: any) => {
-          this.categories = [res.data, ...this.categories];
+          const selectedCategory = this.activeCategoryType.find(
+            (c) => c._id === res.data.categoryId,
+          );
 
+          const newItem = {
+            ...res.data,
+            categoryId: selectedCategory,
+          };
+          3;
+          this.categories = [newItem, ...this.categories];
+
+          // this.categories = [res.data, ...this.categories];
+          // this.getmenu();
           this.resetForm();
-          this.toastr.success('Menu item added successfully!', 'Success');
+          this.toastr.success('Menu added to the top successfully!', 'Success');
         },
         error: () => {
           this.toastr.error('Failed to add menu item', 'Error');
         },
       });
     }
+  }
+
+  afterSubmit() {
+    this.menuForm.reset();
+    this.isEdit = false;
+    this.getmenu();
   }
 
   loadCategories() {
@@ -208,5 +234,19 @@ export class MenuComponent implements OnInit {
         this.toastr.error('Failed to delete menu item', 'Error');
       },
     });
+  }
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    value = value.replace(/\s+/g, ' ');
+
+    value = value.replace(/^\s/, '');
+
+    if (value.length > 0) {
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    this.menuForm.get('name')?.setValue(value, { emitEvent: false });
   }
 }

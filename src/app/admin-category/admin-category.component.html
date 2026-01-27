@@ -13,6 +13,7 @@
   </div>
   <div class="col-sm-3">
     <h5 class="fw-bold text-success mb-3">Categories</h5>
+
     <div class="p-3">
       <form [formGroup]="categoryForm" enctype="multipart/form-data">
         <div class="mb-3">
@@ -22,12 +23,34 @@
             class="form-control"
             formControlName="name"
             placeholder="Enter category name"
+            (input)="onCategoryInput($event)"
           />
+
+          <div
+            class="text-danger"
+            *ngIf="categoryForm.get('name')?.touched && categoryForm.get('name')?.invalid"
+          >
+            <small *ngIf="categoryForm.get('name')?.errors?.['required']">
+              Category name is required
+            </small>
+            <small *ngIf="categoryForm.get('name')?.errors?.['minlength']">
+              Minimum 3 characters required
+            </small>
+          </div>
         </div>
       </form>
 
       <div class="d-flex justify-content-end">
-        <button class="btn btn-success" (click)="addCategory()">Add</button>
+        <div class="d-flex justify-content-end">
+          <button
+            type="button"
+            class="btn"
+            [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
+            (click)="updateCategory()"
+          >
+            {{ isEdit ? 'Update' : 'Add' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -52,14 +75,10 @@
             <td>{{ i + 1 }}</td>
             <td>{{ c.name }}</td>
             <td>
-              <button
-                class="btn btn-sm btn-primary me-1"
-                data-bs-toggle="modal"
-                data-bs-target="#editCategoryModal"
-                (click)="openEditModal(c)"
-              >
+              <button class="btn btn-sm btn-primary me-1" (click)="editCategory(c)">
                 <i class="bi bi-pencil"></i>
               </button>
+
               <button class="btn btn-danger btn-sm" (click)="deleteCategory(c._id)">
                 <i class="bi bi-trash"></i>
               </button>
@@ -98,7 +117,7 @@
 </div>
 
 <!-- EDIT MODAL -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1">
+<!-- <div class="modal fade" id="editCategoryModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -124,4 +143,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

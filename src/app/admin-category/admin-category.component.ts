@@ -22,13 +22,16 @@ export class AdminCategoryComponent implements OnInit {
   categoryForm!: FormGroup;
   newCategory: any = { name: '' };
   selectedCategory: any = {};
+  isEdit = false;
+  editCategoryId: string | null = null;
+
   category = {
     id: null,
     name: '',
   };
   toastMessage: string | null = null;
   toastType: string | undefined;
-  isEdit = false;
+
   selectedCategoryId: any;
   selectedId: any;
   constructor(
@@ -41,7 +44,7 @@ export class AdminCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3)]],
     });
 
     this.getCategories();
@@ -86,25 +89,65 @@ export class AdminCategoryComponent implements OnInit {
     this.category = { id: null, name: '' };
   }
 
-  openEditModal(cat: any) {
-    this.selectedId = cat._id;
+  // openEditModal(cat: any) {
+  //   this.selectedId = cat._id;
+  //   this.categoryForm.patchValue({
+  //     name: cat.name,
+  //   });
+  // }
+  editCategory(cat: any) {
+    this.isEdit = true;
+    this.editCategoryId = cat._id;
+
     this.categoryForm.patchValue({
       name: cat.name,
     });
   }
 
   updateCategory() {
-    if (this.categoryForm.invalid) return;
+    if (this.categoryForm.invalid) {
+       this.categoryForm.markAllAsTouched();
+    
+    this.toastr.error('Please fix the errors in the form', 'Validation Error');
+    return;
+    }
 
-    const payload = {
-      id: this.selectedId,
-      name: this.categoryForm.value.name,
-    };
+    const name = this.categoryForm.value.name;
 
-    this.api.update(payload).subscribe(() => {
-      this.getCategories();
-      window.location.reload();
-    });
+    if (this.isEdit && this.editCategoryId) {
+      // UPDATE
+      const payload = {
+        id: this.editCategoryId,
+        name,
+      };
+
+      this.api.update(payload).subscribe({
+        next: () => {
+          this.toastr.success('Category updated successfully!', 'Success');
+          this.afterSubmit();
+        },
+        error: () => {
+          this.toastr.error('Update failed', 'Error');
+        },
+      });
+    } else {
+      // ADD
+      this.api.create({ name }).subscribe({
+        next: () => {
+          this.toastr.success('Category added to the top successfully!', 'Success');
+          this.afterSubmit();
+        },
+        error: () => {
+          this.toastr.error('Add failed', 'Error');
+        },
+      });
+    }
+  }
+  afterSubmit() {
+    this.categoryForm.reset();
+    this.isEdit = false;
+    this.editCategoryId = null;
+    this.getCategories();
   }
 
   deleteCategory(id: string) {
@@ -124,5 +167,19 @@ export class AdminCategoryComponent implements OnInit {
       this.getCategories();
       this.selectedId = null;
     });
+  }
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    value = value.replace(/\s+/g, ' ');
+
+    value = value.replace(/^\s/, '');
+
+    if (value.length > 0) {
+      value = value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
   }
 }

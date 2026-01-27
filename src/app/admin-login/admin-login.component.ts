@@ -31,7 +31,7 @@ export class AdminLoginComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.AdminForm = this.fb.group({
-      username: ['', [Validators.required]],
+      username: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
@@ -52,8 +52,14 @@ export class AdminLoginComponent implements OnInit {
 
         sessionStorage.setItem('toastMessage', 'Super Admin Login Success');
         sessionStorage.setItem('toastType', 'success');
+this.toastr.success('Admin Login Success');
 
-        this.router.navigate(['/dashboard']);
+
+        this.router.navigate(['/dashboard'], {
+          state: { toast: 'User login success' },
+           // this.router.navigate(['/dashboard']);
+        });
+       
       },
 
       error: (err: any) => {

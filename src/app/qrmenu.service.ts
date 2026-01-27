@@ -5,6 +5,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class QrmenuService {
+  getmenuByCategory(categoryId: string) {
+    throw new Error('Method not implemented.');
+  }
  
    baseUrl = 'http://localhost:3008/api';
   

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterOutlet } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -20,19 +20,26 @@ export class UserComponent implements OnInit {
   isModalOpen = false;
   selectedItems: any[] = [];
   totalPrice = 0;
-
+  searchTerm: string = '';
   customer = {
     name: '',
     mobile: '',
+    members: '',
+    eventType: '',
+    venue: '',
   };
 
   qrImage!: string;
   categories: any;
+ 
 
   constructor(
     private api: QrmenuService,
     private toastr: ToastrService,
+    private router: Router,
+    private fb: FormBuilder
   ) {}
+
   ngOnInit(): void {
     this.qrImage = this.api.getQRImage();
     // this.loadMenus();
@@ -196,6 +203,7 @@ export class UserComponent implements OnInit {
   }
   submitOrder() {
     if (!this.customer.name || !this.customer.mobile) {
+      
       this.toastr.warning('Please enter customer details', 'Validation');
       return;
     }
@@ -213,6 +221,9 @@ export class UserComponent implements OnInit {
     const payload = {
       name: this.customer.name,
       mobile: this.customer.mobile,
+      members: this.customer.members,
+      eventType: this.customer.eventType,
+      venue: this.customer.venue,
       items: itemsPayload,
     };
 
@@ -222,7 +233,10 @@ export class UserComponent implements OnInit {
       next: (res) => {
         this.toastr.success('Order placed successfully! WhatsApp sent to restaurant.', 'Success');
         this.resetOrder();
+
         this.isModalOpen = false;
+        this.showMenu = true;
+        this.resetOrder();
       },
       error: (err) => {
         console.error('Order error:', err);
@@ -234,6 +248,11 @@ export class UserComponent implements OnInit {
   resetOrder() {
     this.selectedCategories = [];
     this.menuItems.forEach((item) => (item.selected = false));
-    this.customer = { name: '', mobile: '' };
+    this.customer = { name: '', mobile: '', members: '', eventType: '', venue: '' };
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/']);
   }
 }

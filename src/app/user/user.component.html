@@ -1,26 +1,81 @@
-<div class="page-container">
+<div class="page-container body">
+  <nav
+    class="navbar navbar-expand-lg navbar-dark px-3 fixed-top"
+    style="background-color: #f4c197f6"
+  >
+    <a class="navbar-brand fw-bold text-dark" routerLink="/home"> QR MENU </a>
+
+    <div class="ms-auto">
+      <button class="btn btn-outline-white" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-2"></i>
+      </button>
+    </div>
+  </nav>
   <!-- QR SECTION -->
   <div *ngIf="!showMenu" class="qr-box">
     <img [src]="qrImage" (click)="scanQR()" />
     <p>Scan QR to View Menu</p>
   </div>
 
+  <!-- Address Bar -->
+  <div class="details-bar" *ngIf="showMenu">
+    <div class="details-left fw-bold">
+      <div class="name">Prasad Chanda</div>
+      <div class="sub">Proprietor</div>
+      <div class="phone">9603 216 215</div>
+    </div>
+
+    <div class="details-center">
+      <div class="title">ELABORATE MENU</div>
+      <div class="tagline">Make Your Choice.....................</div>
+    </div>
+
+    <div class="details-right fw-bold">
+      <div class="name">Apoorva Chanda</div>
+      <div class="sub">Event Planner</div>
+      <div class="phone">9842 935 841</div>
+    </div>
+  </div>
+
   <div class="page-center" *ngIf="showMenu">
     <div class="card shadow-lg p-4 select-card">
-      <h5 class="fw-bold text-success mb-3 text-center">Select Items</h5>
+      <div class="header-bar mb-3">
+        <h5 class="fw-bold text-success text-center mb-0">Select Items</h5>
 
-      <div *ngFor="let category of groupedItems | keyvalue">
-        <h6 class="fw-bold text-success mt-3">
-          {{ category.key }}
-        </h6>
+        <!-- <input
+    type="text"
+    class="form-control search-input"
+    placeholder="Search items..."
+    [(ngModel)]="searchTerm"
+  /> -->
+      </div>
 
-        <div
-          *ngFor="let item of $any(category.value)"
-          class="item-row d-flex justify-content-between align-items-center"
-        >
-          <span class="item-name">{{ item.name }}</span>
+      <div class="single-card">
+        <div class="categories-container">
+          <div *ngFor="let category of groupedItems | keyvalue" class="category-block">
+            <h6 class="fw-bold text-success mt-3">
+              {{ category.key }}
+            </h6>
 
-          <input type="checkbox" class="form-check-input" [(ngModel)]="item.selected" />
+            <!-- <div
+        *ngFor="let item of $any(category.value)"
+        class="item-row d-flex align-items-center no-gap"
+      >
+      <input
+          type="checkbox"
+          class="custom-checkbox"
+          [(ngModel)]="item.selected"
+        />
+        <span class="item-name">{{ item.name }}</span>
+        
+      </div> -->
+            <div *ngFor="let item of $any(category.value)" class="item-row">
+              <label class="no-gap-label">
+                <input type="checkbox" [(ngModel)]="item.selected" />
+                {{ item.name }}
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -35,7 +90,7 @@
 <div class="modal-backdrop-custom" *ngIf="isModalOpen">
   <div class="order-modal card p-4 shadow-lg">
     <h5 class="fw-bold text-success text-center mb-3">Selected Items</h5>
-
+<form #menuForm="ngForm">
     <div *ngFor="let cat of selectedCategories" class="mb-2">✔ {{ cat.name }}</div>
 
     <hr />
@@ -44,20 +99,102 @@
         type="text"
         class="form-control mb-2"
         placeholder="Customer Name"
+        name="customerName"
         [(ngModel)]="customer.name"
+         #customerName="ngModel"
+        required
+        minlength="3"
       />
+     
+
+  <small class="text-danger" *ngIf="customerName.touched && customerName.invalid">
+    <span *ngIf="customerName.errors?.['required']">
+      Customer name is required
+    </span>
+    <span *ngIf="customerName.errors?.['minlength']">
+      Minimum 3 characters required
+    </span>
+  </small>
 
       <input
         type="tel"
-        class="form-control"
+        class="form-control mb-2"
         placeholder="Mobile Number"
+        name="mobile"
         [(ngModel)]="customer.mobile"
+        pattern="[0-9]{10}"
+        #customerMobile="ngModel"
+        maxlength="10"
+        required
       />
+       <small class="text-danger" *ngIf="customerMobile.touched && customerName.invalid">
+    <span *ngIf="customerMobile.errors?.['required']">
+      Customer name is required
+    </span>
+    
+  </small>
+
+      <input
+        type="number"
+        class="form-control mb-2"
+        placeholder="Members"
+        name="members"
+        [(ngModel)]="customer.members"
+        min="1"
+         #customerMembers="ngModel"
+         required
+      />
+       <small class="text-danger" *ngIf="customerMembers.touched && customerMembers.invalid">
+    <span *ngIf="customerMembers.errors?.['required']">
+      Customer Members is required
+    </span>
+  </small>
+
+      <!-- <input
+    type="text"
+    class="form-control mb-2"
+    placeholder="Event Type"
+    name="eventType"
+    [(ngModel)]="customer.eventType"
+  /> -->
+      <select class="form-control mb-2" name="eventType" [(ngModel)]="customer.eventType"  #customerEventType="ngModel">
+        <option value="">Select Event Type</option>
+        <option value="birthday">Birthday</option>
+        <option value="marriage">Marriage</option>
+        <option value="corporate">Corporate</option>
+      </select>
+      <small class="text-danger" *ngIf="customerEventType.touched && customerEventType.invalid">
+    <span *ngIf="customerEventType.errors?.['required']">
+      Event Type is required
+    </span>
+  </small>
+
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Venue"
+        name="venue"
+        [(ngModel)]="customer.venue"
+         #customerVenue="ngModel"
+         required
+      />
+      <small class="text-danger" *ngIf="customerVenue.touched && customerVenue.invalid">
+    <span *ngIf="customerVenue.errors?.['required']">
+      Venue is required
+    </span>
+  </small>
     </div>
 
     <div class="text-center">
       <button class="btn btn-success me-2" (click)="submitOrder()">Submit</button>
       <button class="btn btn-secondary" (click)="closeModal()">Close</button>
     </div>
+    </form>
+  </div>
+</div>
+<div class="footer-bar" *ngIf="showMenu">
+  <div class="footer-center fw-bold">
+    H.NO. 9-1-354, Mamatha Theatre Lane, Bhagathnagar, Karimnagar <br />
+    www.annapurnacaterer.in
   </div>
 </div>

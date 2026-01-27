@@ -41,6 +41,11 @@
                 AdminForm.controls['username']?.touched && AdminForm.controls['username']?.invalid
               "
             >
+            <small
+                *ngIf="AdminForm.controls['username']?.errors?.['required']"
+                class="text-danger"
+                >User Name is required</small
+              >
               <!-- <small
                 *ngIf="AdminForm.controls['admin_mail']?.errors?.['required']"
                 class="text-danger"
