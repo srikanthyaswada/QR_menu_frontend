@@ -5,11 +5,7 @@
   >
     <a class="navbar-brand fw-bold text-dark" routerLink="/home"> QR MENU </a>
 
-    <div class="ms-auto">
-      <button class="btn btn-outline-white" (click)="logout()">
-        <i class="bi bi-box-arrow-right me-2"></i>
-      </button>
-    </div>
+   
   </nav>
   <!-- QR SECTION -->
   <div *ngIf="!showMenu" class="qr-box">
@@ -89,7 +85,7 @@
 <!-- MODAL -->
 <div class="modal-backdrop-custom" *ngIf="isModalOpen">
   <div class="order-modal card p-4 shadow-lg">
-    <h5 class="fw-bold text-success text-center mb-3">Selected Items</h5>
+    <h5 class="fw-bold text-success text-center mb-3">Selected Menu Items</h5>
 <form #menuForm="ngForm">
     <div *ngFor="let cat of selectedCategories" class="mb-2">✔ {{ cat.name }}</div>
 

@@ -5,6 +5,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class QrmenuService {
+  login(loginData: any) {
+    throw new Error('Method not implemented.');
+  }
   getmenuByCategory(categoryId: string) {
     throw new Error('Method not implemented.');
   }

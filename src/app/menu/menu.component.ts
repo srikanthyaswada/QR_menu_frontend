@@ -40,7 +40,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.menuForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)]],
       categoryId: ['', Validators.required],
     });
     this.getmenu();
@@ -235,18 +235,27 @@ export class MenuComponent implements OnInit {
       },
     });
   }
-  onCategoryInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    let value = input.value;
+ onCategoryInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (!input) return;
 
-    value = value.replace(/\s+/g, ' ');
+  let value = input.value;
 
-    value = value.replace(/^\s/, '');
+ 
+  value = value.replace(/[^A-Za-z ]/g, '');
 
-    if (value.length > 0) {
-      value = value.charAt(0).toUpperCase() + value.slice(1);
-    }
+  
+  value = value.replace(/\s+/g, ' ');
 
-    this.menuForm.get('name')?.setValue(value, { emitEvent: false });
-  }
+
+  value = value.replace(/^\s/, '');
+
+ 
+  value = value
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  this.menuForm.get('name')?.setValue(value, { emitEvent: false });
+}
+
 }

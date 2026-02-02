@@ -211,9 +211,11 @@ export class UserComponent implements OnInit {
     if (this.selectedCategories.length === 0) {
       this.toastr.warning('Please select at least one item', 'Validation');
       return;
+      this.isModalOpen = true;
     }
 
     const itemsPayload = this.selectedCategories.map((item) => ({
+        categoryName: item.categoryName || item.name,
       menuId: item._id,
       quantity: 1,
     }));
@@ -232,10 +234,10 @@ export class UserComponent implements OnInit {
     this.api.createOrder(payload).subscribe({
       next: (res) => {
         this.toastr.success('Order placed successfully! WhatsApp sent to restaurant.', 'Success');
-        this.resetOrder();
+        
 
         this.isModalOpen = false;
-        this.showMenu = true;
+        // this.showMenu = true;
         this.resetOrder();
       },
       error: (err) => {
@@ -251,8 +253,5 @@ export class UserComponent implements OnInit {
     this.customer = { name: '', mobile: '', members: '', eventType: '', venue: '' };
   }
 
-  logout() {
-    localStorage.clear();
-    this.router.navigate(['/']);
-  }
+ 
 }

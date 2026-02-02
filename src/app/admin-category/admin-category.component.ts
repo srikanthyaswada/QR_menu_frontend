@@ -44,7 +44,7 @@ export class AdminCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3),Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)]],
     });
 
     this.getCategories();
@@ -78,6 +78,7 @@ export class AdminCategoryComponent implements OnInit {
       },
     });
   }
+  
 
   showToast(message: string, type: string = 'success') {
     this.toastMessage = message;
@@ -168,18 +169,27 @@ export class AdminCategoryComponent implements OnInit {
       this.selectedId = null;
     });
   }
-  onCategoryInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    let value = input.value;
+onCategoryInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (!input) return;
 
-    value = value.replace(/\s+/g, ' ');
+  let value = input.value;
 
-    value = value.replace(/^\s/, '');
+  value = value.replace(/[^A-Za-z ]/g, '');
 
-    if (value.length > 0) {
-      value = value.charAt(0).toUpperCase() + value.slice(1);
-    }
+  
+  value = value.replace(/\s+/g, ' ');
 
-    this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
-  }
+  
+  value = value.replace(/^\s/, '');
+
+ 
+  value = value
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
+}
+
+
 }
