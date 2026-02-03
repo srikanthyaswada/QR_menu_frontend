@@ -12,7 +12,7 @@ export class QrmenuService {
     throw new Error('Method not implemented.');
   }
  
-   baseUrl = 'http://localhost:3008/api';
+   baseUrl = 'http://78.142.47.247:3008/api';
   
 
   constructor(private http:HttpClient ) {}
