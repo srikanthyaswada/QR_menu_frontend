@@ -19,14 +19,13 @@
               {{ c.name }}
             </option>
           </select>
-           <div
+          <div
             class="text-danger"
             *ngIf="menuForm.get('categoryId')?.touched && menuForm.get('categoryId')?.invalid"
           >
             <small *ngIf="menuForm.get('categoryId')?.errors?.['required']">
               Category name is required
             </small>
-           
           </div>
         </div>
         <div class="mb-3">
@@ -35,7 +34,7 @@
             type="text"
             class="form-control"
             formControlName="name"
-            placeholder="Enter Item name"
+            placeholder="Enter Item Name"
             (input)="onCategoryInput($event)"
           />
           <div
@@ -53,12 +52,11 @@
 
         <button
           type="submit"
-          class="btn btn-success w-100"
-          [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
+          class="btn w-100"
           (click)="saveCategory()"
+          [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
         >
           {{ isEdit ? 'Update' : 'Add' }}
-          
         </button>
       </form>
     </div>

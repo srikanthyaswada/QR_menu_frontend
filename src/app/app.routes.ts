@@ -4,6 +4,8 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { AdminCategoryComponent } from './admin-category/admin-category.component';
 import { MenuComponent } from './menu/menu.component';
 import { UserComponent } from './user/user.component';
+import { EventComponent } from './event/event.component';
+import { QrComponent } from './qr/qr.component';
 
 export const routes: Routes = [
   { path: '', component: AdminLoginComponent },
@@ -14,6 +16,8 @@ export const routes: Routes = [
       { path: '', component: AdminCategoryComponent },
       { path: 'category', component: AdminCategoryComponent },
       { path: 'menu', component: MenuComponent },
+      {path: 'event', component: EventComponent}, 
+      {path: 'qr', component: QrComponent}
     ],
   },
   {path: 'user', component: UserComponent},

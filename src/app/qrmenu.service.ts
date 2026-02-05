@@ -64,7 +64,9 @@ menuupdate(data: any) {
 getCategories() {
   return this.http.get(`${this.baseUrl}/categories/get`);
 }
-
+getEventTypes() {
+    return this.http.get(`${this.baseUrl}/event/get`);
+  }
 
  getQRImage() {
     return `${this.baseUrl}/qr/generate-qr`;
@@ -77,5 +79,31 @@ getCategories() {
    getMenuItems() {
     return this.http.get(`${this.baseUrl}/menus/get`);
   }
-  
+  // Event
+  getAllEvenet() {
+    return this.http.get(`${this.baseUrl}/event/get`);
+  }
+    createEvent(data: any) {
+    return this.http.post(`${this.baseUrl}/event/add`, data);
+  }
+
+updateEvent(data: any) {
+  return this.http.put(
+    `${this.baseUrl}/event/put/${data.id}`, data
+  );
+}
+
+  deleteEvent(id: string) {
+  return this.http.delete(
+    `${this.baseUrl}/event/delete/${id}`
+  );
+}
+
+generateQR(){
+  return this.http.post<any>(`${this.baseUrl}/qr/generate-qr`,{})
+}
+assignUrl(qrId: string, url:string){
+  return this.http.post<any>(`${this.baseUrl}/qr/assign`,{qrId, url})
+}
+
 }

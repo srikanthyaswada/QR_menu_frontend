@@ -12,6 +12,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './user.component.scss',
 })
 export class UserComponent implements OnInit {
+  activeEventType: any[] = [];
+
   showScanner = true;
   showMenu = false;
   menuItems: any[] = [];
@@ -31,6 +33,7 @@ export class UserComponent implements OnInit {
 
   qrImage!: string;
   categories: any;
+
  
 
   constructor(
@@ -45,10 +48,22 @@ export class UserComponent implements OnInit {
     // this.loadMenus();
     // this.showMenu = true;
     this.getMenuItems();
+      this.getEventTypes();
   }
   scanQR() {
     this.showMenu = true;
   }
+getEventTypes() {
+  this.api.getEventTypes().subscribe({
+    next: (res: any) => {
+      console.log('Event Types:', res);
+      this.activeEventType = res.data;
+    },
+    error: (err) => {
+      console.error('Error loading event types:', err);
+    }
+  });
+}
 
   getMenuItems() {
     this.api.getMenuItems().subscribe(

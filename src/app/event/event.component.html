@@ -1,0 +1,113 @@
+<div class="row border border-1 rounded p-3">
+  <div class="position-fixed top-0 end-0 p-4">
+    <div *ngIf="toastMessage" class="custom-toast" [ngClass]="toastType">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>{{ toastMessage }}</span>
+        <button class="btn-close ms-3" (click)="toastMessage = null"></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <h5 class="fw-bold text-success mb-3">Event</h5>
+
+    <div class="p-3">
+      <form [formGroup]="EventForm" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label class="form-label">Event Name</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="eventType_name"
+            placeholder="Enter Event Name"
+            (input)="onCategoryInput($event)"
+          />
+
+          <div
+            class="text-danger"
+            *ngIf="
+              EventForm.get('eventType_name')?.touched && EventForm.get('eventType_name')?.invalid
+            "
+          >
+            <small *ngIf="EventForm.get('eventType_name')?.errors?.['required']">
+              Category name is required
+            </small>
+            <small *ngIf="EventForm.get('eventType_name')?.errors?.['minlength']">
+              Minimum 3 characters required
+            </small>
+          </div>
+        </div>
+      </form>
+
+      <div class="d-flex justify-content-center">
+        <button
+          type="button"
+          class="btn w-50"
+          [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
+          (click)="updateEvent()"
+        >
+          {{ isEdit ? 'Update' : 'Add' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-9">
+    <!-- <h5 class="fw-bold text-success mb-3">
+         <i class="bi bi-building me-2"></i>Categories</h5> -->
+    <div
+      *ngIf="event.length > 0"
+      class="table-responsive bg-white p-3 mt-5 rounded-4 table-scroll-wrapper"
+    >
+      <table class="table table-bordered text-start">
+        <thead class="table-success">
+          <tr>
+            <th>S.No</th>
+            <th>Event Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of event; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ c.eventType_name }}</td>
+            <td>
+              <button class="btn btn-sm btn-primary me-1" (click)="editEvent(c)">
+                <i class="bi bi-pencil"></i>
+              </button>
+
+              <button class="btn btn-danger btn-sm" (click)="deleteEvent(c._id)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="event.length === 0" class="text-center mt-4">
+      <div class="alert alert-info shadow-sm py-3">
+        <i class="bi bi-info-circle"></i> No data found
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-danger">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Are you sure you want to delete <strong>{{ selectedId?.eventType_name }}</strong
+        >?
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

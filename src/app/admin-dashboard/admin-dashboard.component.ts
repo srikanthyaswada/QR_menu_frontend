@@ -5,6 +5,7 @@ import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router'
 
 @Component({
   selector: 'app-admin-dashboard',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterOutlet, RouterLink, RouterModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
@@ -12,8 +13,8 @@ import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router'
 export class AdminDashboardComponent implements OnInit {
   toastMessage: string | null = null;
   toastType: 'success' | 'error' | 'warning' = 'success';
- AdminName: any;
- 
+  AdminName: any;
+
   constructor(private router: Router) {}
   ngOnInit(): void {
     this.AdminName = sessionStorage.getItem('AdminName') || '';
@@ -21,6 +22,6 @@ export class AdminDashboardComponent implements OnInit {
   logout(): void {
     localStorage.clear();
     this.router.navigate(['/']);
-     localStorage.removeItem('userName');
+    localStorage.removeItem('userName');
   }
 }

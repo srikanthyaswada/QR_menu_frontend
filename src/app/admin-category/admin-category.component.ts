@@ -24,14 +24,14 @@ export class AdminCategoryComponent implements OnInit {
   selectedCategory: any = {};
   isEdit = false;
   editCategoryId: string | null = null;
-
+  selectedFilter: string = 'All';
   category = {
     id: null,
     name: '',
   };
   toastMessage: string | null = null;
   toastType: string | undefined;
-
+  filterMode: 'active' | 'inactive' | 'all' = 'all';
   selectedCategoryId: any;
   selectedId: any;
   constructor(
@@ -44,7 +44,15 @@ export class AdminCategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3),Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/),
+        ],
+      ],
+      status: ['', Validators.required],
     });
 
     this.getCategories();
@@ -53,14 +61,25 @@ export class AdminCategoryComponent implements OnInit {
     this.api.getAll().subscribe({
       next: (res: any) => {
         console.log('API RESPONSE ', res);
-        this.categories = res.data;
 
+        this.categories = res.data;
         this.cd.detectChanges();
       },
       error: (err) => {
         console.error('API ERROR ', err);
       },
     });
+  }
+  get filteredCategories() {
+    if (this.filterMode === 'active') {
+      return this.categories.filter((c) => c.status === 'active');
+    }
+
+    if (this.filterMode === 'inactive') {
+      return this.categories.filter((c) => c.status === 'inactive');
+    }
+
+    return this.categories; // all
   }
 
   addCategory() {
@@ -78,7 +97,6 @@ export class AdminCategoryComponent implements OnInit {
       },
     });
   }
-  
 
   showToast(message: string, type: string = 'success') {
     this.toastMessage = message;
@@ -102,24 +120,25 @@ export class AdminCategoryComponent implements OnInit {
 
     this.categoryForm.patchValue({
       name: cat.name,
+      status: cat.status,
     });
   }
 
   updateCategory() {
     if (this.categoryForm.invalid) {
-       this.categoryForm.markAllAsTouched();
-    
-    this.toastr.error('Please fix the errors in the form', 'Validation Error');
-    return;
-    }
+      this.categoryForm.markAllAsTouched();
 
-    const name = this.categoryForm.value.name;
+      this.toastr.error('Please fix the errors in the form', 'Validation Error');
+      return;
+    }
+    const { name, status } = this.categoryForm.value;
 
     if (this.isEdit && this.editCategoryId) {
       // UPDATE
       const payload = {
         id: this.editCategoryId,
         name,
+        status,
       };
 
       this.api.update(payload).subscribe({
@@ -133,7 +152,7 @@ export class AdminCategoryComponent implements OnInit {
       });
     } else {
       // ADD
-      this.api.create({ name }).subscribe({
+      this.api.create({ name, status }).subscribe({
         next: () => {
           this.toastr.success('Category added to the top successfully!', 'Success');
           this.afterSubmit();
@@ -151,45 +170,69 @@ export class AdminCategoryComponent implements OnInit {
     this.getCategories();
   }
 
-  deleteCategory(id: string) {
-    this.api.delete(id).subscribe({
+  deleteCategory(cat: any) {
+    if (!cat?._id) {
+      console.error('ID is missing');
+      return;
+    }
+
+    this.api.delete(cat._id).subscribe({
       next: () => {
+        this.toastr.success('Category moved to Inactive!', 'Success');
         this.getCategories();
-        this.toastr.success('Category deleted successfully!', 'Success');
       },
       error: (err) => {
         console.error('Error deleting category:', err);
-        this.toastr.error('Failed to delete category. Please try again.', 'Error');
+        this.toastr.error('Failed to delete category.', 'Error');
       },
     });
   }
+
   confirmDelete() {
     this.api.delete(this.selectedId._id).subscribe(() => {
       this.getCategories();
       this.selectedId = null;
     });
   }
-onCategoryInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input) return;
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
-  let value = input.value;
+    let value = input.value;
 
-  value = value.replace(/[^A-Za-z ]/g, '');
+    value = value.replace(/[^A-Za-z ]/g, '');
 
-  
-  value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, ' ');
 
-  
-  value = value.replace(/^\s/, '');
+    value = value.replace(/^\s/, '');
 
- 
-  value = value
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
-  this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
-}
+    this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
+  }
+  changeFilter(value: string) {
+    this.selectedFilter = value;
 
+    switch (value) {
+      case 'All':
+        this.showall();
+        break;
+      case 'Active':
+        this.showActive();
+        break;
+      case 'Inactive':
+        this.showInactive();
+        break;
+    }
+  }
+  showActive() {
+    this.filterMode = 'active';
+  }
 
+  showInactive() {
+    this.filterMode = 'inactive';
+  }
+  showall() {
+    this.filterMode = 'all';
+  }
 }

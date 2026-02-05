@@ -2,9 +2,9 @@
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-success px-3 fixed-top">
     <a class="navbar-brand fw-bold text-white" routerLink="/home"> QR MENU </a>
- 
+
     <div class="ms-auto dropdown d-flex align-items-center">
-        <span class="text-white fw-bold me-2">{{ AdminName }}</span>
+      <span class="text-white fw-bold me-2">{{ AdminName }}</span>
       <a class="nav-link text-white dropdown-toggle" role="button" data-bs-toggle="dropdown">
         <i class="bi bi-person-circle fs-4"></i>
       </a>
@@ -14,8 +14,8 @@
           <a class="dropdown-item" routerLink="#"> <i class="bi bi-person me-2"></i> Profile </a>
         </li>
         <li><hr class="dropdown-divider" /></li>
-                <li>
-          <a class="dropdown-item" routerLink="/user"> <i class="bi bi-bag-fill me-2"></i>   User</a>
+        <li>
+          <a class="dropdown-item" routerLink="/user"> <i class="bi bi-bag-fill me-2"></i> User</a>
         </li>
         <li><hr class="dropdown-divider" /></li>
         <li>
@@ -51,8 +51,20 @@
           <i class="bi bi-plus-circle me-2"></i> Categories
         </a>
 
-        <a class="btn side-btn text-dark" routerLink="menu" routerLinkActive="active-btn">
+        <a
+          class="btn side-btn text-dark"
+          routerLink="/dashboard/menu"
+          routerLinkActive="active-btn"
+        >
           <i class="bi bi-list-check me-2"></i> Menu
+        </a>
+
+        <a class="btn side-btn text-dark" routerLink="event" routerLinkActive="active-btn">
+          <i class="bi bi-calendar-event me-2"></i> Event Type
+        </a>
+
+        <a class="btn side-btn text-dark" routerLink="qr" routerLinkActive="active-btn">
+          <i class="bi bi-qr-code-scan me-2"></i> QR Scanner
         </a>
       </div>
     </div>

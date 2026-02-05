@@ -31,8 +31,18 @@ export class AdminLoginComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.AdminForm = this.fb.group({
-      username: ['', [Validators.required,Validators.minLength(3),Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)] ],
-      password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^\d{1,6}$/)]],
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/),
+        ],
+      ],
+      password: [
+        '',
+        [Validators.required, Validators.minLength(6), Validators.pattern(/^\d{1,6}$/)],
+      ],
     });
   }
   adminLogin() {
@@ -49,18 +59,16 @@ export class AdminLoginComponent implements OnInit {
         //   localStorage.setItem('a', JSON.stringify(res.data));
         //   localStorage.setItem('admin_token', res.token);
         // }
-         sessionStorage.setItem('AdminName', this.AdminForm.value.username);
+        sessionStorage.setItem('AdminName', this.AdminForm.value.username);
 
         sessionStorage.setItem('toastMessage', 'Super Admin Login Success');
         sessionStorage.setItem('toastType', 'success');
-this.toastr.success('Admin Login Success');
-
+        this.toastr.success('Admin Login Success');
 
         this.router.navigate(['/dashboard'], {
           state: { toast: 'User login success' },
-           // this.router.navigate(['/dashboard']);
+          // this.router.navigate(['/dashboard']);
         });
-       
       },
 
       error: (err: any) => {
@@ -87,40 +95,31 @@ this.toastr.success('Admin Login Success');
     setTimeout(() => (this.toastMessage = null), 1500);
   }
   onUsernameInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input) return;
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
-  let value = input.value;
+    let value = input.value;
 
- 
-  value = value.replace(/[^A-Za-z ]/g, '');
+    value = value.replace(/[^A-Za-z ]/g, '');
 
- 
-  value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, ' ');
 
-  
-  value = value.replace(/^\s/, '');
+    value = value.replace(/^\s/, '');
 
-  
-  value = value
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
-  this.AdminForm.get('username')?.setValue(value, { emitEvent: false });
-}
-onPasswordInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input) return;
-
-  let value = input.value.replace(/\D/g, ''); // Remove non-digits
-
- 
-  if (value.length > 6) {
-    value = value.substring(0, 6);
+    this.AdminForm.get('username')?.setValue(value, { emitEvent: false });
   }
+  onPasswordInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
-  this.AdminForm.get('password')?.setValue(value, { emitEvent: false });
-}
+    let value = input.value.replace(/\D/g, ''); // Remove non-digits
 
+    if (value.length > 6) {
+      value = value.substring(0, 6);
+    }
 
+    this.AdminForm.get('password')?.setValue(value, { emitEvent: false });
+  }
 }
