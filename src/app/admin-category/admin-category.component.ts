@@ -24,14 +24,14 @@ export class AdminCategoryComponent implements OnInit {
   selectedCategory: any = {};
   isEdit = false;
   editCategoryId: string | null = null;
- selectedFilter: string = 'All';
+  selectedFilter: string = 'All';
   category = {
     id: null,
     name: '',
   };
   toastMessage: string | null = null;
   toastType: string | undefined;
-filterMode: 'active' | 'inactive' | 'all' = 'all';
+  filterMode: 'active' | 'inactive' | 'all' = 'all';
   selectedCategoryId: any;
   selectedId: any;
   constructor(
@@ -44,8 +44,15 @@ filterMode: 'active' | 'inactive' | 'all' = 'all';
 
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3),Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)]],
-      status: ['', Validators.required]
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/),
+        ],
+      ],
+      status: ['', Validators.required],
     });
 
     this.getCategories();
@@ -54,8 +61,8 @@ filterMode: 'active' | 'inactive' | 'all' = 'all';
     this.api.getAll().subscribe({
       next: (res: any) => {
         console.log('API RESPONSE ', res);
-       
- this.categories = res.data;
+
+        this.categories = res.data;
         this.cd.detectChanges();
       },
       error: (err) => {
@@ -63,19 +70,18 @@ filterMode: 'active' | 'inactive' | 'all' = 'all';
       },
     });
   }
-get filteredCategories() {
-  if (this.filterMode === 'active') {
-    return this.categories.filter(c => c.status === 'active');
+  get filteredCategories() {
+    if (this.filterMode === 'active') {
+      return this.categories.filter((c) => c.status === 'active');
+    }
+
+    if (this.filterMode === 'inactive') {
+      return this.categories.filter((c) => c.status === 'inactive');
+    }
+
+    return this.categories; // all
   }
 
-  if (this.filterMode === 'inactive') {
-    return this.categories.filter(c => c.status === 'inactive');
-  }
-
-  return this.categories; // all
-}
-
-  
   addCategory() {
     if (this.categoryForm.invalid) return;
 
@@ -91,7 +97,6 @@ get filteredCategories() {
       },
     });
   }
-  
 
   showToast(message: string, type: string = 'success') {
     this.toastMessage = message;
@@ -115,26 +120,25 @@ get filteredCategories() {
 
     this.categoryForm.patchValue({
       name: cat.name,
-      status:cat.status
+      status: cat.status,
     });
   }
 
   updateCategory() {
     if (this.categoryForm.invalid) {
-       this.categoryForm.markAllAsTouched();
-    
-    this.toastr.error('Please fix the errors in the form', 'Validation Error');
-    return;
+      this.categoryForm.markAllAsTouched();
+
+      this.toastr.error('Please fix the errors in the form', 'Validation Error');
+      return;
     }
-const { name, status } = this.categoryForm.value; 
-  
+    const { name, status } = this.categoryForm.value;
 
     if (this.isEdit && this.editCategoryId) {
       // UPDATE
       const payload = {
         id: this.editCategoryId,
         name,
-        status
+        status,
       };
 
       this.api.update(payload).subscribe({
@@ -148,7 +152,7 @@ const { name, status } = this.categoryForm.value;
       });
     } else {
       // ADD
-      this.api.create({ name,status }).subscribe({
+      this.api.create({ name, status }).subscribe({
         next: () => {
           this.toastr.success('Category added to the top successfully!', 'Success');
           this.afterSubmit();
@@ -166,23 +170,23 @@ const { name, status } = this.categoryForm.value;
     this.getCategories();
   }
 
- deleteCategory(cat: any) {
-  if (!cat?._id) {
-    console.error('ID is missing');
-    return;
-  }
-
-  this.api.delete(cat._id).subscribe({
-    next: () => {
-      this.toastr.success('Category moved to Inactive!', 'Success');
-      this.getCategories();
-    },
-    error: (err) => {
-      console.error('Error deleting category:', err);
-      this.toastr.error('Failed to delete category.', 'Error');
+  deleteCategory(cat: any) {
+    if (!cat?._id) {
+      console.error('ID is missing');
+      return;
     }
-  });
-}
+
+    this.api.delete(cat._id).subscribe({
+      next: () => {
+        this.toastr.success('Category moved to Inactive!', 'Success');
+        this.getCategories();
+      },
+      error: (err) => {
+        console.error('Error deleting category:', err);
+        this.toastr.error('Failed to delete category.', 'Error');
+      },
+    });
+  }
 
   confirmDelete() {
     this.api.delete(this.selectedId._id).subscribe(() => {
@@ -190,27 +194,22 @@ const { name, status } = this.categoryForm.value;
       this.selectedId = null;
     });
   }
-onCategoryInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input) return;
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
-  let value = input.value;
+    let value = input.value;
 
-  value = value.replace(/[^A-Za-z ]/g, '');
+    value = value.replace(/[^A-Za-z ]/g, '');
 
-  
-  value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, ' ');
 
-  
-  value = value.replace(/^\s/, '');
+    value = value.replace(/^\s/, '');
 
- 
-  value = value
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
-  this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
-}
+    this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
+  }
   changeFilter(value: string) {
     this.selectedFilter = value;
 
@@ -225,7 +224,6 @@ onCategoryInput(event: Event) {
         this.showInactive();
         break;
     }
-    
   }
   showActive() {
     this.filterMode = 'active';
@@ -237,5 +235,4 @@ onCategoryInput(event: Event) {
   showall() {
     this.filterMode = 'all';
   }
-
 }

@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-menu',
-  standalone:true,
+  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
@@ -58,9 +58,8 @@ export class MenuComponent implements OnInit {
   getmenu() {
     this.api.getmenu().subscribe({
       next: (res: any) => {
-         console.log('API RESPONSE ', res);
+        console.log('API RESPONSE ', res);
         this.categories = res.data;
-        
       },
       error: (err) => console.error(err),
     });
@@ -177,9 +176,7 @@ export class MenuComponent implements OnInit {
   loadCategories() {
     this.api.getCategories().subscribe({
       next: (res: any) => {
-       this.activeCategoryType = res.data.filter(
-        (c: any) => c.status === 'active'
-      );
+        this.activeCategoryType = res.data.filter((c: any) => c.status === 'active');
       },
       error: (err) => console.error(err),
     });
