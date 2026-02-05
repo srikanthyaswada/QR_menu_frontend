@@ -29,7 +29,8 @@ export class MenuComponent implements OnInit {
   toastMessage: string | null = null;
   toastType: string | undefined;
   title: any;
-
+  filterMode: 'active' | 'inactive' | 'all' = 'all';
+  selectedFilter: string = 'All';
   isEdit: boolean = false;
 
   constructor(
@@ -230,21 +231,29 @@ export class MenuComponent implements OnInit {
     this.selectedId = category;
   }
 
-  confirmDelete() {
-    if (!this.selectedId) return;
+confirmDelete() {
+  if (!this.selectedId) return;
 
-    this.api.menudelete(this.selectedId._id).subscribe({
-      next: () => {
-        this.categories = this.categories.filter((item) => item._id !== this.selectedId._id);
+  this.api.menudelete(this.selectedId._id).subscribe({
+    next: (res: any) => {
+      const index = this.categories.findIndex(
+        (item) => item._id === this.selectedId._id
+      );
 
-        this.selectedId = null;
-        this.toastr.success('Menu item deleted successfully!', 'Success');
-      },
-      error: () => {
-        this.toastr.error('Failed to delete menu item', 'Error');
-      },
-    });
-  }
+      if (index !== -1) {
+        this.categories[index].status = 'inactive';
+        this.categories = [...this.categories];
+      }
+
+      this.selectedId = null;
+      this.toastr.success('Menu moved to inactive successfully!', 'Success');
+    },
+    error: () => {
+      this.toastr.error('Failed to update status', 'Error');
+    },
+  });
+}
+
   onCategoryInput(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input) return;
@@ -260,5 +269,42 @@ export class MenuComponent implements OnInit {
     value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
     this.menuForm.get('name')?.setValue(value, { emitEvent: false });
+  }
+  get filteredCategories() {
+  if (this.filterMode === 'active') {
+    return this.categories.filter(c => c.status === 'active');
+  }
+
+  if (this.filterMode === 'inactive') {
+    return this.categories.filter(c => c.status === 'inactive');
+  }
+
+  return this.categories; 
+}
+
+   changeFilter(value: string) {
+    this.selectedFilter = value;
+
+    switch (value) {
+      case 'All':
+        this.showall();
+        break;
+      case 'Active':
+        this.showActive();
+        break;
+      case 'Inactive':
+        this.showInactive();
+        break;
+    }
+  }
+  showActive() {
+    this.filterMode = 'active';
+  }
+
+  showInactive() {
+    this.filterMode = 'inactive';
+  }
+  showall() {
+    this.filterMode = 'all';
   }
 }
