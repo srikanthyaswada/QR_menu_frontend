@@ -11,8 +11,34 @@
       </div>
     </div>
   </div>
+
   <div class="col-sm-3">
-    <h5 class="fw-bold text-success mb-3">Categories</h5>
+<div class="d-flex align-items-center w-100 mb-3">
+  <h4 class="fw-bold text-success mb-0">
+    Categories
+  </h4>
+
+  <!-- <div class="dropdown ms-auto me-0">
+    <button
+      class="btn filter-btn dropdown-toggle"
+      type="button"
+      data-bs-toggle="dropdown"
+    >
+      {{ selectedFilter }}
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><button class="dropdown-item" (click)="changeFilter('All')">All</button></li>
+      <li><button class="dropdown-item" (click)="changeFilter('Active')">Active</button></li>
+      <li><button class="dropdown-item" (click)="changeFilter('Inactive')">Inactive</button></li>
+    </ul>
+  </div> -->
+</div>
+
+
+
+
+
 
     <div class="p-3">
       <form [formGroup]="categoryForm" enctype="multipart/form-data">
@@ -22,7 +48,7 @@
             type="text"
             class="form-control"
             formControlName="name"
-            placeholder="Enter category name"
+            placeholder="Enter Category Name"
             (input)="onCategoryInput($event)"
           />
 
@@ -36,15 +62,33 @@
             <small *ngIf="categoryForm.get('name')?.errors?.['minlength']">
               Minimum 3 characters required
             </small>
+                <label class="form-label">Category Name</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="status"
+            placeholder="Enter category Status"
+            
+          />
+
+         
           </div>
         </div>
+        <div class="mb-3">
+  <label class="form-label">Status</label>
+  <select class="form-select" formControlName="status">
+     <option value="">Select Status</option>
+    <option value="active">Active</option>
+    <option value="inactive">Inactive</option>
+  </select>
+</div>
       </form>
 
       <div class="d-flex justify-content-center">
         
           <button
             type="button"
-            class="btn"
+            class="btn w-50"
             [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
             (click)="updateCategory()"
           >
@@ -56,6 +100,21 @@
   </div>
 
   <div class="col-sm-9">
+      <div class="dropdown ms-auto me-0">
+    <button
+      class="btn filter-btn dropdown-toggle"
+      type="button"
+      data-bs-toggle="dropdown"
+    >
+      {{ selectedFilter }}
+    </button>
+
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><button class="dropdown-item" (click)="changeFilter('All')">All</button></li>
+      <li><button class="dropdown-item" (click)="changeFilter('Active')">Active</button></li>
+      <li><button class="dropdown-item" (click)="changeFilter('Inactive')">Inactive</button></li>
+    </ul>
+  </div>
     <!-- <h5 class="fw-bold text-success mb-3">
          <i class="bi bi-building me-2"></i>Categories</h5> -->
     <div
@@ -67,19 +126,29 @@
           <tr>
             <th>S.No</th>
             <th>Category Name</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let c of categories; let i = index">
+          <tr *ngFor="let c of filteredCategories; let i = index">
+
             <td>{{ i + 1 }}</td>
             <td>{{ c.name }}</td>
+             <td>
+        <span 
+          class="badge" 
+          [ngClass]="c.status === 'active' ? 'bg-success' : 'bg-secondary'"
+        >
+          {{ c.status | titlecase }}
+        </span>
+      </td>
             <td>
-              <button class="btn btn-sm btn-primary me-1" (click)="editCategory(c)">
+              <button class="btn btn-sm btn-outline-primary  me-1" (click)="editCategory(c)">
                 <i class="bi bi-pencil"></i>
               </button>
 
-              <button class="btn btn-danger btn-sm" (click)="deleteCategory(c._id)">
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteCategory(c)">
                 <i class="bi bi-trash"></i>
               </button>
             </td>

@@ -35,7 +35,7 @@
             type="text"
             class="form-control"
             formControlName="name"
-            placeholder="Enter Item name"
+            placeholder="Enter Item Name"
             (input)="onCategoryInput($event)"
           />
           <div
@@ -53,9 +53,9 @@
 
         <button
           type="submit"
-          class="btn btn-success w-100"
-          [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
-          (click)="saveCategory()"
+          class="btn  w-100"
+           (click)="saveCategory()"
+          [ngClass]="isEdit ? 'btn-primary' : 'btn-success'" 
         >
           {{ isEdit ? 'Update' : 'Add' }}
           

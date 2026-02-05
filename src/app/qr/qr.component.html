@@ -1,0 +1,26 @@
+<div class="center-container">
+  <div class="qr-card">
+    <div class="card-content">
+      
+      <!-- <img 
+        [src]="'http://localhost:3008/api/qrcode'" 
+        class="qr-image"
+        alt="QR Code"
+      /> -->
+
+<!-- <button (click)="generate()">Generate QR</button> -->
+
+<img *ngIf="qrImage" [src]="qrImage" width="220" />
+<p>Scan QR to view menu</p>
+      <!-- <p class="qr-text">Scan QR to View Menu</p>
+
+     
+      <input 
+        type="text"
+        class="form-control mt-3"
+        [value]="'http://localhost:3008/api/menus/get'"
+        readonly
+      /> -->
+    </div>
+  </div>
+</div>

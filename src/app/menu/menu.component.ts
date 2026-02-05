@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,11 +9,12 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
-import bootstrap from '../../main.server';
+
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-menu',
+  standalone:true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
@@ -36,11 +37,19 @@ export class MenuComponent implements OnInit {
     private router: Router,
     private api: QrmenuService,
     private toastr: ToastrService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.menuForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/),
+        ],
+      ],
       categoryId: ['', Validators.required],
     });
     this.getmenu();
@@ -49,7 +58,9 @@ export class MenuComponent implements OnInit {
   getmenu() {
     this.api.getmenu().subscribe({
       next: (res: any) => {
-        this.categories = res?.data ? [...res.data] : [];
+         console.log('API RESPONSE ', res);
+        this.categories = res.data;
+        
       },
       error: (err) => console.error(err),
     });
@@ -166,7 +177,9 @@ export class MenuComponent implements OnInit {
   loadCategories() {
     this.api.getCategories().subscribe({
       next: (res: any) => {
-        this.activeCategoryType = res.data;
+       this.activeCategoryType = res.data.filter(
+        (c: any) => c.status === 'active'
+      );
       },
       error: (err) => console.error(err),
     });
@@ -235,27 +248,20 @@ export class MenuComponent implements OnInit {
       },
     });
   }
- onCategoryInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input) return;
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
-  let value = input.value;
+    let value = input.value;
 
- 
-  value = value.replace(/[^A-Za-z ]/g, '');
+    value = value.replace(/[^A-Za-z ]/g, '');
 
-  
-  value = value.replace(/\s+/g, ' ');
+    value = value.replace(/\s+/g, ' ');
 
+    value = value.replace(/^\s/, '');
 
-  value = value.replace(/^\s/, '');
+    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
- 
-  value = value
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-
-  this.menuForm.get('name')?.setValue(value, { emitEvent: false });
-}
-
+    this.menuForm.get('name')?.setValue(value, { emitEvent: false });
+  }
 }

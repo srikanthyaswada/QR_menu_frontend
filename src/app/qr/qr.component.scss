@@ -1,0 +1,18 @@
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Add this to move the card up and right */
+.qr-card {
+  background: #fff;
+  padding: 50px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+
+  /* Shift the card */
+  transform: translate(50px, -50px); /* 50px right, 50px up */
+}

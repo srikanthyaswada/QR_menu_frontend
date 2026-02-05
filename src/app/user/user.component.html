@@ -7,14 +7,13 @@
 
    
   </nav>
-  <!-- QR SECTION -->
-  <div *ngIf="!showMenu" class="qr-box">
-    <img [src]="qrImage" (click)="scanQR()" />
-    <p>Scan QR to View Menu</p>
-  </div>
+  
+
+
+
 
   <!-- Address Bar -->
-  <div class="details-bar" *ngIf="showMenu">
+  <div class="details-bar" >
     <div class="details-left fw-bold">
       <div class="name">Prasad Chanda</div>
       <div class="sub">Proprietor</div>
@@ -33,7 +32,7 @@
     </div>
   </div>
 
-  <div class="page-center" *ngIf="showMenu">
+  <div class="page-center" >
     <div class="card shadow-lg p-4 select-card">
       <div class="header-bar mb-3">
         <h5 class="fw-bold text-success text-center mb-0">Select Items</h5>
@@ -153,7 +152,7 @@
     name="eventType"
     [(ngModel)]="customer.eventType"
   /> -->
-      <select class="form-control mb-2" name="eventType" [(ngModel)]="customer.eventType"  #customerEventType="ngModel">
+      <!-- <select class="form-control mb-2" name="eventType" [(ngModel)]="customer.eventType"  #customerEventType="ngModel">
         <option value="">Select Event Type</option>
         <option value="birthday">Birthday</option>
         <option value="marriage">Marriage</option>
@@ -163,7 +162,30 @@
     <span *ngIf="customerEventType.errors?.['required']">
       Event Type is required
     </span>
-  </small>
+  </small> -->
+  
+
+<select
+  class="form-select mb-2"
+  name="eventType"
+  [(ngModel)]="customer.eventType"
+  #customerEventType="ngModel"
+  required
+>
+  <option value="">Select Event</option>
+
+  <option *ngFor="let c of activeEventType" [ngValue]="c._id">
+    {{ c.eventType_name }}
+  </option>
+</select>
+
+<small class="text-danger"
+       *ngIf="customerEventType.touched && customerEventType.invalid">
+  Event is required
+</small>
+
+
+           
 
       <input
         type="text"
@@ -188,7 +210,7 @@
     </form>
   </div>
 </div>
-<div class="footer-bar" *ngIf="showMenu">
+<div class="footer-bar" >
   <div class="footer-center fw-bold">
     H.NO. 9-1-354, Mamatha Theatre Lane, Bhagathnagar, Karimnagar <br />
     www.annapurnacaterer.in

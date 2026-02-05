@@ -8,3 +8,20 @@
   position: static !important;
   background-color: #d1e7dd;
 }
+.filter-btn {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+  border: 1px solid #1e7e34;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-weight: 600;
+}
+
+.filter-btn:hover {
+  background-color: #1e7e34;
+  color: #fff;
+}
+
+.filter-btn:focus {
+  box-shadow: none;
+}
