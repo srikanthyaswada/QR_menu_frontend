@@ -34,13 +34,11 @@ export class UserComponent implements OnInit {
   qrImage!: string;
   categories: any;
 
- 
-
   constructor(
     private api: QrmenuService,
     private toastr: ToastrService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -48,29 +46,29 @@ export class UserComponent implements OnInit {
     // this.loadMenus();
     // this.showMenu = true;
     this.getMenuItems();
-      this.getEventTypes();
+    this.getEventTypes();
   }
   scanQR() {
     this.showMenu = true;
   }
-getEventTypes() {
-  this.api.getEventTypes().subscribe({
-    next: (res: any) => {
-      console.log('Event Types:', res);
-      this.activeEventType = res.data;
-    },
-    error: (err) => {
-      console.error('Error loading event types:', err);
-    }
-  });
-}
+  getEventTypes() {
+    this.api.getEventTypes().subscribe({
+      next: (res: any) => {
+        console.log('Event Types:', res);
+        this.activeEventType = res.data;
+      },
+      error: (err) => {
+        console.error('Error loading event types:', err);
+      },
+    });
+  }
 
   getMenuItems() {
     this.api.getMenuItems().subscribe(
       (res: any) => {
         const items = res.data;
         console.log('items', items);
-
+        const activeItems = items.filter((item: any) => item.status === 'active');
         this.groupedItems = items.reduce((acc: any, item: any) => {
           const categoryName = item.categoryId?.name;
 
@@ -218,7 +216,6 @@ getEventTypes() {
   }
   submitOrder() {
     if (!this.customer.name || !this.customer.mobile) {
-      
       this.toastr.warning('Please enter customer details', 'Validation');
       return;
     }
@@ -230,7 +227,7 @@ getEventTypes() {
     }
 
     const itemsPayload = this.selectedCategories.map((item) => ({
-        categoryName: item.categoryName || item.name,
+      categoryName: item.categoryName || item.name,
       menuId: item._id,
       quantity: 1,
     }));
@@ -249,7 +246,6 @@ getEventTypes() {
     this.api.createOrder(payload).subscribe({
       next: (res) => {
         this.toastr.success('Order placed successfully! WhatsApp sent to restaurant.', 'Success');
-        
 
         this.isModalOpen = false;
         // this.showMenu = true;
@@ -267,6 +263,4 @@ getEventTypes() {
     this.menuItems.forEach((item) => (item.selected = false));
     this.customer = { name: '', mobile: '', members: '', eventType: '', venue: '' };
   }
-
- 
 }
