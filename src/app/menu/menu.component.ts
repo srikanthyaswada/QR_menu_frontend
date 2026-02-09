@@ -7,10 +7,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
-
 import { ToastrService } from 'ngx-toastr';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-menu',
@@ -21,17 +22,17 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class MenuComponent implements OnInit {
   categories: any[] = [];
-  menuForm!: FormGroup;
-  selectedCategoryId: any = null;
-  selectedId: any = null;
-  editCategoryForm!: FormGroup;
   activeCategoryType: any[] = [];
-  toastMessage: string | null = null;
-  toastType: string | undefined;
-  title: any;
+  menus: any[] = [];
+  menuForm!: FormGroup;
+
+  selectedItemId: string | null = null;
+  selectedItem: any = null;
+  menuId!: string;
   filterMode: 'active' | 'inactive' | 'all' = 'all';
-  selectedFilter: string = 'All';
-  isEdit: boolean = false;
+  selectedFilter = 'All';
+  isEdit = false;
+  filteredItems: any;
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +43,25 @@ export class MenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const eventData = localStorage.getItem('a');
+
+if (eventData) {
+  const eventObj = JSON.parse(eventData);
+  this.menuId = eventObj._id;
+  console.log('menuId:', this.menuId);
+}
+    this.loadCategories();
+
+    this.initializeForm();
+    this.getMenu();
+  }
+
+  initializeForm() {
+    const storedMenu = localStorage.getItem('categories');
+
+    if (storedMenu) {
+      this.menus = JSON.parse(storedMenu);
+    }
     this.menuForm = this.fb.group({
       name: [
         '',
@@ -52,237 +72,169 @@ export class MenuComponent implements OnInit {
         ],
       ],
       categoryId: ['', Validators.required],
+      status: ['active'],
+      admin_id: [this.menuId],
     });
-    this.getmenu();
-    this.loadCategories();
   }
-  getmenu() {
+
+  getMenu() {
     this.api.getmenu().subscribe({
       next: (res: any) => {
-        console.log('API RESPONSE ', res);
-        this.categories = res.data;
+        this.categories = [...res.data];
+        localStorage.setItem('menu', JSON.stringify(res.data));
+        this.cd.detectChanges();
       },
-      error: (err) => console.error(err),
     });
-  }
-
-  openAddModal() {
-    this.selectedCategoryId = null;
-    this.menuForm.reset();
-  }
-
-  edit(category: any) {
-    this.selectedId = category._id;
-    this.isEdit = true;
-    this.menuForm.patchValue({
-      name: category.name,
-      categoryId: category.categoryId._id,
-    });
-  }
-
-  // saveCategory() {
-  //   if (this.menuForm.invalid) {
-  //     console.log('FORM INVALID', this.menuForm.value);
-  //     return;
-  //   }
-
-  //   if (this.selectedId) {
-  //     this.api
-  //       .menuupdate({
-  //         id: this.selectedId,
-  //         ...this.menuForm.value,
-  //       })
-  //       .subscribe(() => {
-  //         this.getmenu();
-  //         this.resetForm();
-  //       });
-  //   } else {
-  //     this.api.menucreate(this.menuForm.value).subscribe(() => {
-  //       this.getmenu();
-  //       this.resetForm();
-  //       window.location.reload();
-  //     });
-  //   }
-  // }
-  saveCategory() {
-    if (this.menuForm.invalid) {
-      console.log('FORM INVALID', this.menuForm.value);
-      this.menuForm.markAllAsTouched();
-      this.toastr.error('Please fill all required fields', 'Error');
-      return;
-    }
-
-    if (this.selectedId) {
-      this.api
-        .menuupdate({
-          id: this.selectedId,
-          ...this.menuForm.value,
-        })
-        .subscribe({
-          next: (res: any) => {
-            const index = this.categories.findIndex((item) => item._id === this.selectedId);
-
-            if (index !== -1) {
-              const selectedCategory = this.activeCategoryType.find(
-                (c) => c._id === res.data.categoryId,
-              );
-
-              this.categories[index] = {
-                ...res.data,
-                categoryId: selectedCategory,
-              };
-
-              this.categories = [...this.categories];
-            }
-
-            this.resetForm();
-            this.toastr.success('Menu item updated successfully!', 'Success');
-          },
-          error: () => {
-            this.toastr.error('Failed to update menu item', 'Error');
-          },
-        });
-    } else {
-      this.api.menucreate(this.menuForm.value).subscribe({
-        next: (res: any) => {
-          const selectedCategory = this.activeCategoryType.find(
-            (c) => c._id === res.data.categoryId,
-          );
-
-          const newItem = {
-            ...res.data,
-            categoryId: selectedCategory,
-          };
-          3;
-          this.categories = [newItem, ...this.categories];
-
-          // this.categories = [res.data, ...this.categories];
-          // this.getmenu();
-          this.resetForm();
-          this.toastr.success('Menu added to the top successfully!', 'Success');
-        },
-        error: () => {
-          this.toastr.error('Failed to add menu item', 'Error');
-        },
-      });
-    }
-  }
-
-  afterSubmit() {
-    this.menuForm.reset();
-    this.isEdit = false;
-    this.getmenu();
   }
 
   loadCategories() {
     this.api.getCategories().subscribe({
       next: (res: any) => {
         this.activeCategoryType = res.data.filter((c: any) => c.status === 'active');
+        // localStorage.setItem('categories', JSON.stringify(res.data));
+        this.cd.detectChanges();
       },
-      error: (err) => console.error(err),
     });
   }
 
-  deleteCategory(id: string) {
-    this.api.menudelete(id).subscribe({
-      next: () => {
-        this.getmenu();
+  saveCategory() {
+    if (this.menuForm.invalid) {
+      this.menuForm.markAllAsTouched();
+      this.toastr.error('Please fill all required fields');
+      return;
+    }
+    const payload = this.menuForm.value;
+    if (this.selectedItemId) {
+      this.updateMenu(payload);
+    } else {
+      this.createMenu(payload);
+    }
+  }
 
-        this.toastr.success('Menu item deleted successfully!', 'Success');
+  createMenu(payload: any) {
+    this.api.menucreate(payload).subscribe({
+      next: (res: any) => {
+        const selectedCategory = this.activeCategoryType.find((c) => c._id === res.data.categoryId);
+
+        const newItem = {
+          ...res.data,
+          categoryId: selectedCategory,
+          admin_id: this.menuId,
+        };
+
+        this.categories = [newItem, ...this.categories];
+        this.loadCategories();
+        this.afterSubmit();
+        this.toastr.success('Menu added successfully!');
       },
-      error: (err) => {
-        console.error('Error deleting menu item:', err);
-        this.toastr.error('Failed to delete menu item. Please try again.', 'Error');
+      error: () => {
+        this.toastr.error('Failed to add menu item');
       },
     });
+  }
+
+  updateMenu(payload: any) {
+    this.api
+      .menuupdate({
+        id: this.selectedItemId,
+        admin_id: this.menuId,
+        ...payload,
+      })
+      .subscribe({
+        next: (res: any) => {
+          const index = this.categories.findIndex((item) => item._id === this.selectedItemId);
+
+          if (index !== -1) {
+            const selectedCategory = this.activeCategoryType.find(
+              (c) => c._id === res.data.categoryId,
+            );
+
+            this.categories[index] = {
+              ...res.data,
+              categoryId: selectedCategory,
+              admin_id: this.menuId,
+            };
+
+            this.categories = [...this.categories];
+          }
+          this.getMenu();
+          this.afterSubmit();
+          this.toastr.success('Menu updated successfully!');
+        },
+        error: () => {
+          this.toastr.error('Failed to update menu item');
+        },
+      });
+  }
+
+  afterSubmit() {
+    this.resetForm();
   }
 
   resetForm() {
-    this.menuForm.reset();
-    this.selectedId = null;
+    this.menuForm.reset({
+      name: '',
+      categoryId: '',
+      status: 'active',
+      admin_id: this.menuId
+    });
+
+    this.selectedItemId = null;
+    this.selectedItem = null;
+    this.isEdit = false;
   }
 
-  // createOrUpdateCategory() {
-  //     if (this.categoryForm.invalid) return;
+  edit(item: any) {
+    this.selectedItemId = item._id;
+    this.isEdit = true;
 
-  //     if (this.selectedCategoryId) {
-  //       // UPDATE
-  //       this.selectedCategoryId.name = this.categoryForm.value.name;
-  //       this.selectedCategoryId.price = this.categoryForm.value.price;
-  //       this.selectedCategoryId.categoryId = this.categoryForm.value.categoryId;
-  //       this.selectedCategoryId.isAvailable = this.categoryForm.value.isAvailable;
-  //       this.selectedCategoryId.createdAt = this.categoryForm.value.createdAt;
-  //       alert('Category updated successfully!');
-  //     } else {
-  //       // CREATE
-  //       this.categories.push(this.categoryForm.value);
-  //       alert('Category added successfully!');
-  //     }
-
-  //     this.categoryForm.reset();
-  //     this.selectedCategoryId = null;
-
-  //   const modal: any = document.getElementById('CategoryModal');
-  // const modalInstance = (window as any).bootstrap.Modal.getInstance(modal);
-  // modalInstance.hide();
-  //   }
-
-  openDeleteModal(category: any) {
-    this.selectedId = category;
+    this.menuForm.patchValue({
+      name: item.name,
+      categoryId: item.categoryId?._id,
+      status: item.status,
+      admin_id: item.menuId,
+    });
   }
 
-confirmDelete() {
-  if (!this.selectedId) return;
-
-  this.api.menudelete(this.selectedId._id).subscribe({
-    next: (res: any) => {
-      const index = this.categories.findIndex(
-        (item) => item._id === this.selectedId._id
-      );
-
-      if (index !== -1) {
-        this.categories[index].status = 'inactive';
-        this.categories = [...this.categories];
-      }
-
-      this.selectedId = null;
-      this.toastr.success('Menu moved to inactive successfully!', 'Success');
-    },
-    error: () => {
-      this.toastr.error('Failed to update status', 'Error');
-    },
-  });
-}
-
-  onCategoryInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input) return;
-
-    let value = input.value;
-
-    value = value.replace(/[^A-Za-z ]/g, '');
-
-    value = value.replace(/\s+/g, ' ');
-
-    value = value.replace(/^\s/, '');
-
-    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-
-    this.menuForm.get('name')?.setValue(value, { emitEvent: false });
+  openDeleteModal(item: any) {
+    this.selectedItem = item;
   }
+
+  confirmDelete() {
+    if (!this.selectedItem) return;
+
+    this.api.menudelete(this.selectedItem._id).subscribe({
+      next: () => {
+        this.getMenu();
+        this.closeModal();
+        this.selectedItem = null;
+        this.toastr.success('Menu moved to inactive');
+      },
+      error: () => {
+        this.toastr.error('Failed to update status');
+      },
+    });
+  }
+
+  closeModal() {
+    const modalElement = document.getElementById('deleteModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance?.hide();
+  }
+
   get filteredCategories() {
-  if (this.filterMode === 'active') {
-    return this.categories.filter(c => c.status === 'active');
+    if (this.filterMode === 'active') {
+      return this.categories.filter((c) => c.status === 'active');
+    }
+
+    if (this.filterMode === 'inactive') {
+      return this.categories.filter((c) => c.status === 'inactive');
+    }
+
+    return this.categories; // all
   }
 
-  if (this.filterMode === 'inactive') {
-    return this.categories.filter(c => c.status === 'inactive');
-  }
-
-  return this.categories; 
-}
-
-   changeFilter(value: string) {
+  changeFilter(value: string) {
     this.selectedFilter = value;
 
     switch (value) {
@@ -306,5 +258,22 @@ confirmDelete() {
   }
   showall() {
     this.filterMode = 'all';
+  }
+
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    let value = input.value;
+
+    value = value.replace(/[^A-Za-z ]/g, '');
+    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/^\s/, '');
+    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+
+    this.menuForm.get('name')?.setValue(value, { emitEvent: false });
+  }
+
+  trackById(index: number, item: any) {
+    return item._id;
   }
 }
