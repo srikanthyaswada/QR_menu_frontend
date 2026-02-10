@@ -7,11 +7,33 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-3">
-    <h5 class="fw-bold text-success mb-3">Event</h5>
+<!-- <div class="border rounded-4 p-4 bg-white shadow-sm"> -->
 
-    <div class="p-3">
-      <form [formGroup]="EventForm" enctype="multipart/form-data">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold text-success m-0">Event</h5>
+
+    <div class="dropdown">
+      <button
+        class="btn btn-outline-success dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+      >
+        {{ selectedFilter }}
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item" (click)="changeFilter('All')">All</button></li>
+        <li><button class="dropdown-item" (click)="changeFilter('Active')">Active</button></li>
+        <li><button class="dropdown-item" (click)="changeFilter('Inactive')">Inactive</button></li>
+      </ul>
+    </div>
+  </div>
+
+  
+  <div class="row align-items-start">
+    <div class="col-md-3">
+      <form [formGroup]="EventForm">
+
         <div class="mb-3">
           <label class="form-label">Event Name</label>
           <input
@@ -19,77 +41,75 @@
             class="form-control"
             formControlName="eventType_name"
             placeholder="Enter Event Name"
-            (input)="onCategoryInput($event)"
+             (input)="onCategoryInput($event)"
           />
-
-          <div
-            class="text-danger"
-            *ngIf="
-              EventForm.get('eventType_name')?.touched && EventForm.get('eventType_name')?.invalid
-            "
-          >
-            <small *ngIf="EventForm.get('eventType_name')?.errors?.['required']">
-              Category name is required
-            </small>
-            <small *ngIf="EventForm.get('eventType_name')?.errors?.['minlength']">
-              Minimum 3 characters required
-            </small>
-          </div>
         </div>
-      </form>
 
-      <div class="d-flex justify-content-center">
+        <div class="mb-3" *ngIf="isEdit">
+          <label class="form-label">Status</label>
+          <select class="form-select" formControlName="status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
         <button
           type="button"
-          class="btn w-50"
+          class="btn w-100"
           [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
           (click)="updateEvent()"
         >
-          {{ isEdit ? 'Update' : 'Add' }}
+          {{ isEdit ? 'Update Event' : 'Add Event' }}
         </button>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-sm-9">
-    <!-- <h5 class="fw-bold text-success mb-3">
-         <i class="bi bi-building me-2"></i>Categories</h5> -->
-    <div
-      *ngIf="event.length > 0"
-      class="table-responsive bg-white p-3 mt-5 rounded-4 table-scroll-wrapper"
-    >
-      <table class="table table-bordered text-start">
-        <thead class="table-success">
-          <tr>
-            <th>S.No</th>
-            <th>Event Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let c of event; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ c.eventType_name }}</td>
-            <td>
-              <button class="btn btn-sm btn-primary me-1" (click)="editEvent(c)">
-                <i class="bi bi-pencil"></i>
-              </button>
+      </form>
+    </div>
 
-              <button class="btn btn-danger btn-sm" (click)="deleteEvent(c._id)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div *ngIf="event.length === 0" class="text-center mt-4">
-      <div class="alert alert-info shadow-sm py-3">
-        <i class="bi bi-info-circle"></i> No data found
+    <div class="col-md-9">
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-success">
+            <tr>
+              <th>S.No</th>
+              <th>Event Name</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let c of filteredEvents; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ c.eventType_name }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="c.status === 'active'
+                    ? 'bg-success'
+                    : 'bg-secondary'"
+                >
+                  {{ c.status === 'active' ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-2"
+                        (click)="editEvent(c)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger"
+                        (click)="deleteEvent(c._id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
+    <!-- </div> -->
+
   </div>
 </div>
+
 
 <div class="modal fade" id="deleteModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">

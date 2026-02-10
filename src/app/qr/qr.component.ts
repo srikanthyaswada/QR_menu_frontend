@@ -1,42 +1,46 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { QrmenuService } from '../qrmenu.service';
 
 @Component({
   selector: 'app-qr',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './qr.component.html',
   styleUrl: './qr.component.scss',
 })
 export class QrComponent implements OnInit {
-  menuUrl: string = window.location.origin + '/user';
-  showMenu = false;
-  qrImage!: string;
-  qrId!: string;
 
-  constructor(private api: QrmenuService) {}
+  qrImage: string | null = null;
+  loading = true;
+
+  constructor(
+    private api: QrmenuService,
+    private cd: ChangeDetectorRef
+  ) {}
+
   ngOnInit(): void {
-    // this.menuUrl = window.location.origin + '/user';
-    this.api.generateQR().subscribe((res) => {
-      this.qrImage = res.image;
-      this.api.assignUrl(res.qrId, 'http://localhost:4200/user').subscribe();
-    });
+    this.loadQR();
   }
 
-  // scanQR() {
-  //   this.showMenu = true;
-  // }
-  // generate() {
-  //   this.api.generateQR().subscribe(res => {
-  //     this.qrImage = res.image;
-  //     this.qrId = res.qrId;
-  //   });
-  // }
+  loadQR() {
+    this.loading = true;
 
-  // assign() {
-  //   this.api.assignUrl(this.qrId, 'http://localhost:4200/user')
-  //     .subscribe(() => alert('URL Assigned'));
-  // }
+    this.api.generateQR().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.qrImage = res.qrImage;
+        }
+        this.loading = false;
+
+        // 🔥 Force Angular to update view immediately
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+        this.cd.detectChanges();
+      }
+    });
+  }
 }

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 75vh;
 }
 
 
@@ -12,5 +12,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: center;
-  transform: translate(50px, -50px); 
+
+  
+  transform: translate( -30px);
 }

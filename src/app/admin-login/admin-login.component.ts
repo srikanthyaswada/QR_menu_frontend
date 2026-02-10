@@ -55,10 +55,10 @@ export class AdminLoginComponent implements OnInit {
     this.api.AdminLogin(this.AdminForm.value).subscribe({
       next: (res: any) => {
         console.log(res, 'Admin Login Success');
-        // if (res) {
-        //   localStorage.setItem('a', JSON.stringify(res.data));
-        //   localStorage.setItem('admin_token', res.token);
-        // }
+        if (res) {
+          localStorage.setItem('a', JSON.stringify(res.data));
+          localStorage.setItem('admin_token', res.token);
+        }
         sessionStorage.setItem('AdminName', this.AdminForm.value.username);
 
         sessionStorage.setItem('toastMessage', 'Super Admin Login Success');
@@ -114,7 +114,7 @@ export class AdminLoginComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input) return;
 
-    let value = input.value.replace(/\D/g, ''); // Remove non-digits
+    let value = input.value.replace(/\D/g, ''); 
 
     if (value.length > 6) {
       value = value.substring(0, 6);

@@ -1,14 +1,12 @@
-<div class="page-container body">
-  <nav
-    class="navbar navbar-expand-lg navbar-dark px-3 fixed-top"
-    style="background-color: #f4c197f6"
-  >
-    <a class="navbar-brand fw-bold text-dark" routerLink="/home"> QR MENU </a>
+<div class="page-container">
+  <!-- HEADER -->
+  <nav class="navbar">
+    <span class="brand">QR MENU</span>
   </nav>
 
-  <!-- Address Bar -->
+  <!-- DETAILS BAR -->
   <div class="details-bar">
-    <div class="details-left fw-bold">
+    <div class="details-left">
       <div class="name">Prasad Chanda</div>
       <div class="sub">Proprietor</div>
       <div class="phone">9603 216 215</div>
@@ -16,179 +14,128 @@
 
     <div class="details-center">
       <div class="title">ELABORATE MENU</div>
-      <div class="tagline">Make Your Choice.....................</div>
+      <div class="tagline">Make Your Choice...</div>
     </div>
 
-    <div class="details-right fw-bold">
+    <div class="details-right">
       <div class="name">Apoorva Chanda</div>
       <div class="sub">Event Planner</div>
       <div class="phone">9842 935 841</div>
     </div>
   </div>
 
+  <!-- MENU CARD -->
   <div class="page-center">
-    <div class="card shadow-lg p-4 select-card">
-      <div class="header-bar mb-3">
-        <h5 class="fw-bold text-success text-center mb-0">Select Items</h5>
+    <div class="menu-card">
+      <div class="categories-container">
+        <div *ngFor="let category of groupedItems | keyvalue" class="category-block">
+          <h6 class="category-title">{{ category.key }}</h6>
 
-        <!-- <input
-    type="text"
-    class="form-control search-input"
-    placeholder="Search items..."
-    [(ngModel)]="searchTerm"
-  /> -->
-      </div>
-
-      <div class="single-card">
-        <div class="categories-container">
-          <div *ngFor="let category of groupedItems | keyvalue" class="category-block">
-            <h6 class="fw-bold text-success mt-3">
-              {{ category.key }}
-            </h6>
-
-            <!-- <div
-        *ngFor="let item of $any(category.value)"
-        class="item-row d-flex align-items-center no-gap"
-      >
-      <input
-          type="checkbox"
-          class="custom-checkbox"
-          [(ngModel)]="item.selected"
-        />
-        <span class="item-name">{{ item.name }}</span>
-        
-      </div> -->
-            <div *ngFor="let item of $any(category.value)" class="item-row">
-              <label class="no-gap-label">
-                <input type="checkbox" [(ngModel)]="item.selected" />
-                {{ item.name }}
-              </label>
-            </div>
+          <div class="items-list">
+            <label *ngFor="let item of category.value" class="menu-item">
+              <input type="checkbox" [(ngModel)]="item.selected" />
+              <span>{{ item.name }}</span>
+            </label>
           </div>
         </div>
       </div>
 
-      <div class="text-center mt-4">
-        <button class="btn btn-success px-4" (click)="sendOrder()">Send Order</button>
+      <div class="action-bar">
+        <button class="send-btn" (click)="sendOrder()">Send Order</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL -->
-<div class="modal-backdrop-custom" *ngIf="isModalOpen">
-  <div class="order-modal card p-4 shadow-lg">
-    <h5 class="fw-bold text-success text-center mb-3">Selected Menu Items</h5>
-    <form #menuForm="ngForm">
-      <div *ngFor="let cat of selectedCategories" class="mb-2">✔ {{ cat.name }}</div>
-
-      <hr />
-      <div class="mb-3">
-        <input
-          type="text"
-          class="form-control mb-2"
-          placeholder="Customer Name"
-          name="customerName"
-          [(ngModel)]="customer.name"
-          #customerName="ngModel"
-          required
-          minlength="3"
-        />
-
-        <small class="text-danger" *ngIf="customerName.touched && customerName.invalid">
-          <span *ngIf="customerName.errors?.['required']"> Customer name is required </span>
-          <span *ngIf="customerName.errors?.['minlength']"> Minimum 3 characters required </span>
-        </small>
-
-        <input
-          type="tel"
-          class="form-control mb-2"
-          placeholder="Mobile Number"
-          name="mobile"
-          [(ngModel)]="customer.mobile"
-          pattern="[0-9]{10}"
-          #customerMobile="ngModel"
-          maxlength="10"
-          required
-        />
-        <small class="text-danger" *ngIf="customerMobile.touched && customerName.invalid">
-          <span *ngIf="customerMobile.errors?.['required']"> Customer name is required </span>
-        </small>
-
-        <input
-          type="number"
-          class="form-control mb-2"
-          placeholder="Members"
-          name="members"
-          [(ngModel)]="customer.members"
-          min="1"
-          #customerMembers="ngModel"
-          required
-        />
-        <small class="text-danger" *ngIf="customerMembers.touched && customerMembers.invalid">
-          <span *ngIf="customerMembers.errors?.['required']"> Customer Members is required </span>
-        </small>
-
-        <!-- <input
-    type="text"
-    class="form-control mb-2"
-    placeholder="Event Type"
-    name="eventType"
-    [(ngModel)]="customer.eventType"
-  /> -->
-        <!-- <select class="form-control mb-2" name="eventType" [(ngModel)]="customer.eventType"  #customerEventType="ngModel">
-        <option value="">Select Event Type</option>
-        <option value="birthday">Birthday</option>
-        <option value="marriage">Marriage</option>
-        <option value="corporate">Corporate</option>
-      </select>
-      <small class="text-danger" *ngIf="customerEventType.touched && customerEventType.invalid">
-    <span *ngIf="customerEventType.errors?.['required']">
-      Event Type is required
-    </span>
-  </small> -->
-
-        <select
-          class="form-select mb-2"
-          name="eventType"
-          [(ngModel)]="customer.eventType"
-          #customerEventType="ngModel"
-          required
-        >
-          <option value="">Select Event</option>
-
-          <option *ngFor="let c of activeEventType" [ngValue]="c._id">
-            {{ c.eventType_name }}
-          </option>
-        </select>
-
-        <small class="text-danger" *ngIf="customerEventType.touched && customerEventType.invalid">
-          Event is required
-        </small>
-
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Venue"
-          name="venue"
-          [(ngModel)]="customer.venue"
-          #customerVenue="ngModel"
-          required
-        />
-        <small class="text-danger" *ngIf="customerVenue.touched && customerVenue.invalid">
-          <span *ngIf="customerVenue.errors?.['required']"> Venue is required </span>
-        </small>
-      </div>
-
-      <div class="text-center">
-        <button class="btn btn-success me-2" (click)="submitOrder()">Submit</button>
-        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
-      </div>
-    </form>
+  <!-- Modal for Selected Items -->
+  <div class="modal-backdrop-custom" *ngIf="isModalOpen">
+    <div class="order-modal card p-4 shadow-lg">
+      <h5 class="fw-bold text-success text-center mb-3">Selected Menu Items</h5>
+      <form #menuForm="ngForm">
+        <div *ngFor="let cat of selectedCategories" class="mb-3">
+          <h6 class="fw-bold text-primary">{{ cat.name }}</h6>
+          <div *ngFor="let item of cat.items" class="ms-3 mb-1">✔ {{ item.name }}</div>
+        </div>
+        <hr />
+        <div class="mb-3">
+          <input
+            type="text"
+            class="form-control mb-2"
+            placeholder="Customer Name"
+            name="customerName"
+            [(ngModel)]="customer.name"
+            #customerName="ngModel"
+            required
+            minlength="3"
+          />
+          <small class="text-danger" *ngIf="customerName.touched && customerName.invalid">
+            <span *ngIf="customerName.errors?.['required']">Customer name is required</span>
+            <span *ngIf="customerName.errors?.['minlength']">Minimum 3 characters required</span>
+          </small>
+          <input
+            type="tel"
+            class="form-control mb-2"
+            placeholder="Mobile Number"
+            name="mobile"
+            [(ngModel)]="customer.mobile"
+            pattern="[0-9]{10}"
+            #customerMobile="ngModel"
+            maxlength="10"
+            required
+          />
+          <small class="text-danger" *ngIf="customerMobile.touched && customerMobile.invalid">
+            <span *ngIf="customerMobile.errors?.['required']">Mobile number is required</span>
+          </small>
+          <input
+            type="number"
+            class="form-control mb-2"
+            placeholder="Members"
+            name="members"
+            [(ngModel)]="customer.members"
+            min="1"
+            #customerMembers="ngModel"
+            required
+          />
+          <small class="text-danger" *ngIf="customerMembers.touched && customerMembers.invalid">
+            <span *ngIf="customerMembers.errors?.['required']">Members count is required</span>
+          </small>
+          <select
+            class="form-select mb-2"
+            name="eventType"
+            [(ngModel)]="customer.eventType"
+            #customerEventType="ngModel"
+            required
+          >
+            <option value="">Select Event</option>
+            <option *ngFor="let c of activeEventType" [ngValue]="c._id">
+              {{ c.eventType_name }}
+            </option>
+          </select>
+          <small class="text-danger" *ngIf="customerEventType.touched && customerEventType.invalid">
+            Event is required
+          </small>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Venue"
+            name="venue"
+            [(ngModel)]="customer.venue"
+            #customerVenue="ngModel"
+            required
+          />
+          <small class="text-danger" *ngIf="customerVenue.touched && customerVenue.invalid">
+            Venue is required
+          </small>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-success me-2" (click)="submitOrder()">Submit</button>
+          <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
-<div class="footer-bar">
-  <div class="footer-center fw-bold">
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
     H.NO. 9-1-354, Mamatha Theatre Lane, Bhagathnagar, Karimnagar <br />
     www.annapurnacaterer.in
   </div>

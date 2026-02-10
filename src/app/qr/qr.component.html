@@ -1,25 +1,20 @@
 <div class="center-container">
-  <div class="qr-card">
-    <div class="card-content">
-      <!-- <img 
-        [src]="'http://localhost:3008/api/qrcode'" 
-        class="qr-image"
-        alt="QR Code"
-      /> -->
+  <div class="qr-card shadow p-4 text-center">
 
-      <!-- <button (click)="generate()">Generate QR</button> -->
-
-      <img *ngIf="qrImage" [src]="qrImage" width="220" />
-      <p>Scan QR to view menu</p>
-      <!-- <p class="qr-text">Scan QR to View Menu</p>
-
-     
-      <input 
-        type="text"
-        class="form-control mt-3"
-        [value]="'http://localhost:3008/api/menus/get'"
-        readonly
-      /> -->
+    <div *ngIf="loading" class="fw-bold text-success">
+      Loading QR...
     </div>
+
+    <div *ngIf="!loading && qrImage">
+      <img
+        [src]="qrImage"
+        alt="QR Code"
+        width="220"
+        height="220"
+        class="img-fluid"
+      />
+      <p class="mt-3 fw-semibold">Scan QR to view menu</p>
+    </div>
+
   </div>
 </div>

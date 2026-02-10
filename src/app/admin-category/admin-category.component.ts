@@ -29,6 +29,7 @@ export class AdminCategoryComponent implements OnInit {
     id: null,
     name: '',
   };
+  adminId!: string;
   toastMessage: string | null = null;
   toastType: string | undefined;
   filterMode: 'active' | 'inactive' | 'all' = 'all';
@@ -43,6 +44,13 @@ export class AdminCategoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+  const adminData = localStorage.getItem('a');
+
+  if (adminData) {
+    const adminid = JSON.parse(adminData);
+    this.adminId = adminid._id; 
+     console.log('adminId:', this.adminId);
+  }
     this.categoryForm = this.fb.group({
       name: [
         '',
@@ -52,7 +60,8 @@ export class AdminCategoryComponent implements OnInit {
           Validators.pattern(/^[A-Za-z]+(?: [A-Za-z]+)*$/),
         ],
       ],
-      status: ['', Validators.required],
+      status: ['active'],
+      admin_id: [this.adminId]
     });
 
     this.getCategories();
@@ -62,7 +71,8 @@ export class AdminCategoryComponent implements OnInit {
       next: (res: any) => {
         console.log('API RESPONSE ', res);
 
-        this.categories = res.data;
+             this.categories = [...res.data];
+             
         this.cd.detectChanges();
       },
       error: (err) => {
@@ -79,24 +89,37 @@ export class AdminCategoryComponent implements OnInit {
       return this.categories.filter((c) => c.status === 'inactive');
     }
 
-    return this.categories; // all
+    return this.categories; 
   }
 
-  addCategory() {
-    if (this.categoryForm.invalid) return;
+//  addCategory() {
+//   if (this.categoryForm.invalid) return;
 
-    this.api.create(this.categoryForm.value).subscribe({
-      next: () => {
-        this.categoryForm.reset();
-        this.getCategories();
-        this.toastr.success('Category registered successfully!', 'Success');
-      },
-      error: (err) => {
-        console.error('Error creating category:', err);
-        this.toastr.error('Failed to register category. Please try again.', 'Error');
-      },
-    });
-  }
+//   if (!this.adminId) {
+//     this.toastr.error('Admin ID missing');
+//     return;
+//   }
+
+//   const payload = {
+//     ...this.categoryForm.value,
+//     admin_id: this.adminId  
+//   };
+
+//   console.log('ADD CATEGORY PAYLOAD ', payload);
+
+//   this.api.create(payload).subscribe({
+//     next: () => {
+//       this.categoryForm.reset({ status: 'active' });
+//       this.getCategories();
+//       this.toastr.success('Category registered successfully!');
+//     },
+//     error: (err) => {
+//       console.error('Error creating category:', err);
+//       this.toastr.error('Failed to register category.');
+//     },
+//   });
+// }
+
 
   showToast(message: string, type: string = 'success') {
     this.toastMessage = message;
@@ -121,6 +144,7 @@ export class AdminCategoryComponent implements OnInit {
     this.categoryForm.patchValue({
       name: cat.name,
       status: cat.status,
+      admin_id: this.adminId,
     });
   }
 
@@ -128,7 +152,7 @@ export class AdminCategoryComponent implements OnInit {
     if (this.categoryForm.invalid) {
       this.categoryForm.markAllAsTouched();
 
-      this.toastr.error('Please fix the errors in the form', 'Validation Error');
+      this.toastr.error('Please fix the errors in the form');
       return;
     }
     const { name, status } = this.categoryForm.value;
@@ -139,36 +163,54 @@ export class AdminCategoryComponent implements OnInit {
         id: this.editCategoryId,
         name,
         status,
+        admin_id: this.adminId,
       };
 
       this.api.update(payload).subscribe({
         next: () => {
-          this.toastr.success('Category updated successfully!', 'Success');
+          this.toastr.success('Category updated successfully!');
           this.afterSubmit();
         },
         error: () => {
-          this.toastr.error('Update failed', 'Error');
+          this.toastr.error('Update failed');
         },
       });
-    } else {
-      // ADD
-      this.api.create({ name, status }).subscribe({
-        next: () => {
-          this.toastr.success('Category added to the top successfully!', 'Success');
-          this.afterSubmit();
-        },
-        error: () => {
-          this.toastr.error('Add failed', 'Error');
-        },
-      });
-    }
+    } 
+ else {
+  const payload = {
+    name,
+    status: this.categoryForm.value.status,
+    admin_id: this.adminId, 
+  };
+
+  console.log('ADD CATEGORY PAYLOAD', payload);
+
+  this.api.create(payload).subscribe({
+    next: (res: any) => {
+      this.toastr.success('Category added successfully!');
+      this.afterSubmit();
+    },
+    error: (err) => {
+      console.error('Add category error:', err);
+      this.toastr.error('Add failed');
+    },
+  });
+}
+
   }
-  afterSubmit() {
-    this.categoryForm.reset();
-    this.isEdit = false;
-    this.editCategoryId = null;
-    this.getCategories();
-  }
+afterSubmit() {
+  this.categoryForm.reset({
+    name: '',
+    status: 'active',
+    admin_id: this.adminId  
+  });
+
+  this.isEdit = false;
+  this.editCategoryId = null;
+  this.getCategories();
+   
+}
+
 
   deleteCategory(cat: any) {
     if (!cat?._id) {
