@@ -14,6 +14,7 @@ export class AdminDashboardComponent implements OnInit {
   toastMessage: string | null = null;
   toastType: 'success' | 'error' | 'warning' = 'success';
   AdminName: any;
+  isSidebarOpen = true;
 
   constructor(private router: Router) {}
   ngOnInit(): void {

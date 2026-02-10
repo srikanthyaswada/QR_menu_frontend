@@ -1,0 +1,49 @@
+<div class="col-md-9">
+ <h5 class="fw-bold text-success mb-4">Orders</h5>
+  <div *ngIf="orders.length > 0" class="table-responsive  mt-4">
+    <table class="table table-bordered text-center">
+      <thead class="table-success">
+        <tr>
+          <th>S.No</th>
+          <th>Customer</th>
+          <th>Mobile</th>
+          <th>Items</th>
+          <th>Order Date</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let order of orders; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ order.customerId?.name }}</td>
+          <td>{{ order.customerId?.mobile }}</td>
+          <td>
+            <ul *ngFor="let item of order.items; let i = index">
+
+              <li  class="d-flex">
+                <div>
+                     {{i + 1}} 
+                </div>&nbsp;
+<div>
+                   {{ item.menuId?.name }} 
+
+</div>              </li>
+            </ul>
+          </td>
+          <td>{{ order.orderDate | date: 'short' }}</td>
+        </tr>
+      </tbody>
+
+      <!-- <tbody *ngIf="orders.length === 0">
+    <tr>
+      <td colspan="5" align="center">No orders found</td>
+    </tr>
+  </tbody> -->
+    </table>
+  </div>
+  <div *ngIf="orders.length === 0" class="text-center mt-4">
+    <div class="alert alert-info shadow-sm py-3">
+      <i class="bi bi-info-circle"></i> No data found
+    </div>
+  </div>
+</div>
