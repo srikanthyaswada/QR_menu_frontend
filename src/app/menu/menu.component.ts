@@ -231,7 +231,7 @@ if (eventData) {
       return this.categories.filter((c) => c.status === 'inactive');
     }
 
-    return this.categories; // all
+    return this.categories; 
   }
 
   changeFilter(value: string) {

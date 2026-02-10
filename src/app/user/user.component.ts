@@ -20,7 +20,7 @@ export class UserComponent implements OnInit {
   isModalOpen = false;
   customer = { name: '', mobile: '', members: '', eventType: '', venue: '' };
   qrImage!: string;
-  a_id: any;
+  // a_id: any;
   userId!: string;
 
   constructor(
@@ -31,10 +31,15 @@ export class UserComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('ghjkl');
+    
     const adminData = localStorage.getItem('a');
+    console.log('admin data', adminData);
+    
     if (adminData) {
       const eventObj = JSON.parse(adminData);
       this.userId = eventObj._id;
+      
       console.log('userId:', this.userId);
     }
     //  this.a_id= adminData._id;
@@ -135,21 +140,27 @@ export class UserComponent implements OnInit {
       eventType: this.customer.eventType,
       venue: this.customer.venue,
       items: itemsPayload,
-      admin_id: this.userId,
+      admin_id: this.userId
     };
 
     this.api.createOrder(payload).subscribe({
       next: () => {
+        
         this.toastr.success('Order placed successfully!');
         this.cd.detectChanges();
-        this.resetOrder();
-        this.isModalOpen = false;
+    
       },
+      
       error: (err) => {
         console.error('Order error:', err);
         this.toastr.error('Failed to place order.', 'Error');
       },
+      
     });
+            this.isModalOpen = false;
+                    this.resetOrder();
+
+
   }
 
   resetOrder() {

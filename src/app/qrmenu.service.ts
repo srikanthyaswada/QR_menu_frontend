@@ -24,9 +24,6 @@ updateProfile(adminId: string, data: any) {
   return this.http.put(`${this.baseUrl}/admin/update/${adminId}`, data);
 }
 
-
-
-
   getAll() {
     return this.http.get(`${this.baseUrl}/categories/get`);
   }
