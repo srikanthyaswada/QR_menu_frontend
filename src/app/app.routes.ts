@@ -8,6 +8,7 @@ import { QrComponent } from './qr/qr.component';
 import { MenusComponent } from './menus/menus.component';
 import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 import { MenuComponent } from './menu/menu.component';
+import { OrdersComponent } from './orders/orders.component';
 
 export const routes: Routes = [
   { path: '', component: AdminLoginComponent },
@@ -20,7 +21,8 @@ export const routes: Routes = [
       { path: 'menu', component: MenuComponent },
        {path: 'menus', component: MenusComponent},
       {path: 'event', component: EventComponent}, 
-      {path: 'qr', component: QrComponent}
+      {path: 'qr', component: QrComponent},
+      {path: 'orders', component: OrdersComponent}
     ],
   },
   {path: 'user', component: UserComponent},

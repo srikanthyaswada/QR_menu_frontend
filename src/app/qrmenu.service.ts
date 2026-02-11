@@ -10,7 +10,6 @@ export class QrmenuService {
   baseUrl = 'http://78.142.47.247:3008/api';
     // baseUrl = 'http://localhost:3008/api';
 
-
   constructor(private http: HttpClient) {}
 
   AdminLogin(data: any) {
@@ -99,5 +98,10 @@ updateProfile(adminId: string, data: any) {
   }
   assignUrl(qrId: string, url: string) {
     return this.http.post<any>(`${this.baseUrl}/qr/assign`, { qrId, url });
+  }
+
+  // Orders
+    getOrders() {
+    return this.http.get(`${this.baseUrl}/orders/get`);
   }
 }

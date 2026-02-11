@@ -6,3 +6,27 @@
   background-color: #198754 !important;
   color: white !important;
 }
+
+.sidebar {
+  transition: all 0.3s ease;
+}
+
+
+@media (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    top: 56px; 
+    left: 0;
+    height: 100vh;
+    width: 220px;
+    background: #fff;
+    z-index: 1040;
+  }
+
+  .sidebar-closed {
+    transform: translateX(-100%);
+  }
+}
+
+
+// 

@@ -5,27 +5,28 @@
   </nav>
 
   <!-- DETAILS BAR -->
-  <div class="details-bar">
-    <div class="details-left">
-      <div class="name">Prasad Chanda</div>
-      <div class="sub">Proprietor</div>
-      <div class="phone">9603 216 215</div>
-    </div>
-
-    <div class="details-center">
-      <div class="title">ELABORATE MENU</div>
-      <div class="tagline">Make Your Choice...</div>
-    </div>
-
-    <div class="details-right">
-      <div class="name">Apoorva Chanda</div>
-      <div class="sub">Event Planner</div>
-      <div class="phone">9842 935 841</div>
-    </div>
+<div class="menu-header">
+  <div class="contact left-contact">
+    <div class="person-name">Prasad Chanda</div>
+    <div class="person-role">Proprietor</div>
+    <div class="person-phone">9603 216 215</div>
   </div>
 
+  <div class="menu-title">
+    <div class="title-text">ELABORATE MENU</div>
+    <div class="title-subtext">Make Your Choice...</div>
+  </div>
+
+  <div class="contact right-contact">
+    <div class="person-name">Apoorva Chanda</div>
+    <div class="person-role">Event Planner</div>
+    <div class="person-phone">9842 935 841</div>
+  </div>
+</div>
+
+
   <!-- MENU CARD -->
-  <div class="page-center">
+  <div class="page-center ">
     <div class="menu-card">
       <div class="categories-container">
         <div *ngFor="let category of groupedItems | keyvalue" class="category-block">
