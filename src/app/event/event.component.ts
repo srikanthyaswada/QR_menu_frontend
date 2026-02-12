@@ -27,7 +27,7 @@ export class EventComponent implements OnInit {
   editEventId: string | null = null;
   selectedId: any;
   filterMode: 'active' | 'inactive' | 'all' = 'active';
-  selectedFilter = 'active';
+  selectedFilter = 'Status';
   eventId!: string;
   // isSubmitting = false;
 

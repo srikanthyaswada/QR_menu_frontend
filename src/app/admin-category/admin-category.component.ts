@@ -24,7 +24,7 @@ export class AdminCategoryComponent implements OnInit {
   selectedCategory: any = {};
   isEdit = false;
   editCategoryId: string | null = null;
-  selectedFilter: string = 'active';
+  selectedFilter: string = 'Status';
   category = {
     id: null,
     name: '',

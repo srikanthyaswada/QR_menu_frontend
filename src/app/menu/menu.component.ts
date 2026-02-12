@@ -25,12 +25,11 @@ export class MenuComponent implements OnInit {
   activeCategoryType: any[] = [];
   menus: any[] = [];
   menuForm!: FormGroup;
-
   selectedItemId: string | null = null;
   selectedItem: any = null;
   menuId!: string;
   filterMode: 'active' | 'inactive' | 'all' = 'active';
-  selectedFilter = 'active';
+  selectedFilter = 'Status';
   isEdit = false;
   filteredItems: any;
 
