@@ -19,10 +19,16 @@ export class AdminDashboardComponent implements OnInit {
   constructor(private router: Router) {}
   ngOnInit(): void {
     this.AdminName = sessionStorage.getItem('AdminName') || '';
+    this.isSidebarOpen = window.innerWidth >= 992;
   }
   logout(): void {
     localStorage.clear();
     this.router.navigate(['/']);
     localStorage.removeItem('userName');
+  }
+  closeSidebarOnMobile() {
+    if (window.innerWidth < 992) {
+      this.isSidebarOpen = false;
+    }
   }
 }

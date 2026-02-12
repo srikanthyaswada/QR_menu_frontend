@@ -1,4 +1,4 @@
-<div class="row border border-1 rounded p-3">
+<div class="row rounded p-3">
   <!-- <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="fw-bold">Categories</h4>
   </div> -->
@@ -12,13 +12,12 @@
     </div>
   </div>
 
-  
- <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold text-success m-0">Category</h5>
 
     <div class="dropdown">
       <button
-        class="btn btn-outline-success dropdown-toggle "
+        class="btn btn-outline-success dropdown-toggle"
         type="button"
         id="filterDropdown"
         data-bs-toggle="dropdown"
@@ -40,7 +39,7 @@
       </ul>
     </div>
   </div>
-<div class="col-sm-3">
+  <div class="col-sm-3">
     <div class="p-3">
       <form [formGroup]="categoryForm" enctype="multipart/form-data">
         <div class="mb-3">
@@ -82,7 +81,7 @@
         </div>
       </form>
 
-        <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-center">
         <button
           type="button"
           class="btn w-50"
@@ -100,10 +99,10 @@
          <i class="bi bi-building me-2"></i>Categories</h5> -->
     <div
       *ngIf="categories.length > 0"
-      class="table-responsive bg-white p-3  rounded-4 table-scroll-wrapper"
+      class="table-responsive bg-white p-3 rounded-4 table-scroll-wrapper"
     >
       <table class="table table-bordered text-start">
-        <thead class="table-success">
+        <thead class="table1">
           <tr>
             <th>S.No</th>
             <th>Category Name</th>
@@ -121,13 +120,15 @@
               </span>
             </td>
             <td>
-              <button class="btn btn-sm btn-outline-primary me-1" (click)="editCategory(c)">
-                <i class="bi bi-pencil"></i>
-              </button>
+              <div class="d-flex gap-1 flex-nowrap justify-content-start">
+                <button class="btn btn-sm btn-outline-primary" (click)="editCategory(c)">
+                  <i class="bi bi-pencil"></i>
+                </button>
 
-              <button class="btn btn-outline-danger btn-sm" (click)="deleteCategory(c)">
-                <i class="bi bi-trash"></i>
-              </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteCategory(c)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>

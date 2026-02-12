@@ -5,23 +5,21 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class QrmenuService {
- 
-
   baseUrl = 'http://78.142.47.247:3008/api';
-    // baseUrl = 'http://localhost:3008/api';
+  // baseUrl = 'http://localhost:3008/api';
 
   constructor(private http: HttpClient) {}
 
   AdminLogin(data: any) {
     return this.http.post(`${this.baseUrl}/admin/login`, data);
   }
- getProfile(adminId: string) {
-  return this.http.get(`${this.baseUrl}/admin/getProfile/${adminId}`);
-}
+  getProfile(adminId: string) {
+    return this.http.get(`${this.baseUrl}/admin/getProfile/${adminId}`);
+  }
 
-updateProfile(adminId: string, data: any) {
-  return this.http.put(`${this.baseUrl}/admin/update/${adminId}`, data);
-}
+  updateProfile(adminId: string, data: any) {
+    return this.http.put(`${this.baseUrl}/admin/update/${adminId}`, data);
+  }
 
   getAll() {
     return this.http.get(`${this.baseUrl}/categories/get`);
@@ -38,7 +36,6 @@ updateProfile(adminId: string, data: any) {
   delete(id: string) {
     return this.http.delete(`${this.baseUrl}/categories/delete/${id}`);
   }
-
 
   getMenuData() {
     return this.http.get(`${this.baseUrl}/menus/get`);
@@ -101,7 +98,7 @@ updateProfile(adminId: string, data: any) {
   }
 
   // Orders
-    getOrders() {
+  getOrders() {
     return this.http.get(`${this.baseUrl}/orders/get`);
   }
 }

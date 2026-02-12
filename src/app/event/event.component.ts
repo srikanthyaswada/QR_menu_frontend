@@ -26,8 +26,8 @@ export class EventComponent implements OnInit {
   isEdit = false;
   editEventId: string | null = null;
   selectedId: any;
-  filterMode: 'active' | 'inactive' | 'all' = 'all';
-  selectedFilter = 'All';
+  filterMode: 'active' | 'inactive' | 'all' = 'active';
+  selectedFilter = 'active';
   eventId!: string;
   // isSubmitting = false;
 
@@ -44,13 +44,13 @@ export class EventComponent implements OnInit {
     private cd: ChangeDetectorRef,
   ) {}
   ngOnInit(): void {
-  const eventData = localStorage.getItem('a');
+    const eventData = localStorage.getItem('a');
 
-if (eventData) {
-  const eventObj = JSON.parse(eventData);
-  this.eventId = eventObj._id;
-  console.log('eventId:', this.eventId);
-}
+    if (eventData) {
+      const eventObj = JSON.parse(eventData);
+      this.eventId = eventObj._id;
+      console.log('eventId:', this.eventId);
+    }
 
     this.EventForm = this.fb.group({
       eventType_name: [
@@ -62,7 +62,7 @@ if (eventData) {
         ],
       ],
       status: ['active'],
-      admin_id: [this.eventId]
+      admin_id: [this.eventId],
     });
 
     this.getEvent();
@@ -81,24 +81,24 @@ if (eventData) {
     });
   }
 
-// addCategory() {
-//   if (this.EventForm.invalid || this.isSubmitting) return;
+  // addCategory() {
+  //   if (this.EventForm.invalid || this.isSubmitting) return;
 
-//   this.isSubmitting = true;
-//   const payload = { ...this.EventForm.value };
+  //   this.isSubmitting = true;
+  //   const payload = { ...this.EventForm.value };
 
-//   this.api.create(payload).subscribe({
-//     next: () => {
-//       this.isSubmitting = false;
-//       this.afterSubmit();
-//       this.toastr.success('Event registered successfully!');
-//     },
-//     error: () => {
-//       this.isSubmitting = false;
-//       this.toastr.error('Failed to register Event Type. Please try again.');
-//     }
-//   });
-// }
+  //   this.api.create(payload).subscribe({
+  //     next: () => {
+  //       this.isSubmitting = false;
+  //       this.afterSubmit();
+  //       this.toastr.success('Event registered successfully!');
+  //     },
+  //     error: () => {
+  //       this.isSubmitting = false;
+  //       this.toastr.error('Failed to register Event Type. Please try again.');
+  //     }
+  //   });
+  // }
   showToast(message: string, type: string = 'success') {
     this.toastMessage = message;
     this.toastType = type;
@@ -109,64 +109,57 @@ if (eventData) {
   //   this.event = { id: null, eventType_name: '' };
   // }
 
- editEvent(event: any) {
-  this.isEdit = true;
-  this.editEventId = event._id;
+  editEvent(event: any) {
+    this.isEdit = true;
+    this.editEventId = event._id;
 
-  this.EventForm.patchValue({
-    eventType_name: event.eventType_name,
-    status: event.status,
-       admin_id: this.eventId,
-    
-  });
-}
-
-
-updateEvent() {
-  if (this.EventForm.invalid) {
-    this.EventForm.markAllAsTouched();
-    this.toastr.error('Please fix the errors in the form');
-    return;
+    this.EventForm.patchValue({
+      eventType_name: event.eventType_name,
+      status: event.status,
+      admin_id: this.eventId,
+    });
   }
 
-  if (this.isEdit && this.editEventId) {
+  updateEvent() {
+    if (this.EventForm.invalid) {
+      this.EventForm.markAllAsTouched();
+      this.toastr.error('Please fix the errors in the form');
+      return;
+    }
 
-   const payload = {
-  id: this.editEventId,
-  eventType_name: this.EventForm.value.eventType_name,
-  status: this.EventForm.value.status,
-  admin_id: this.eventId,
-};
+    if (this.isEdit && this.editEventId) {
+      const payload = {
+        id: this.editEventId,
+        eventType_name: this.EventForm.value.eventType_name,
+        status: this.EventForm.value.status,
+        admin_id: this.eventId,
+      };
 
-    console.log("Update Payload:", payload);
+      console.log('Update Payload:', payload);
 
-    this.api.updateEvent(payload).subscribe({
-      next: () => {
-        this.toastr.success('Event updated successfully!');
-        this.afterSubmit();
-      },
-      error: () => {
-        this.toastr.error('Update failed', 'Error');
-      },
-    });
-
-  } else {
-
-    this.api.createEvent(this.EventForm.value).subscribe({
-      next: () => {
-        this.toastr.success('Event added successfully!');
-        this.afterSubmit();
-      },
-      error: () => {
-        this.toastr.error('Add failed', 'Error');
-      },
-    });
-
+      this.api.updateEvent(payload).subscribe({
+        next: () => {
+          this.toastr.success('Event updated successfully!');
+          this.afterSubmit();
+        },
+        error: () => {
+          this.toastr.error('Update failed', 'Error');
+        },
+      });
+    } else {
+      this.api.createEvent(this.EventForm.value).subscribe({
+        next: () => {
+          this.toastr.success('Event added successfully!');
+          this.afterSubmit();
+        },
+        error: () => {
+          this.toastr.error('Add failed', 'Error');
+        },
+      });
+    }
   }
-}
 
-
- get filteredEvents() {
+  get filteredEvents() {
     if (this.filterMode === 'active') {
       return this.event.filter((c) => c.status === 'active');
     }
@@ -175,20 +168,18 @@ updateEvent() {
       return this.event.filter((c) => c.status === 'inactive');
     }
 
-    return this.event; 
+    return this.event;
   }
 
-
-
-afterSubmit() {
-  this.EventForm.reset({
-    status: 'active',
-    admin_id: this.eventId
-  });
-  this.isEdit = false;
-  this.editEventId = null;
-  this.getEvent();
-}
+  afterSubmit() {
+    this.EventForm.reset({
+      status: 'active',
+      admin_id: this.eventId,
+    });
+    this.isEdit = false;
+    this.editEventId = null;
+    this.getEvent();
+  }
 
   deleteEvent(id: string) {
     this.api.deleteEvent(id).subscribe({
@@ -219,7 +210,7 @@ afterSubmit() {
     });
   }
 
-   onCategoryInput(event: Event) {
+  onCategoryInput(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input) return;
 
@@ -235,7 +226,7 @@ afterSubmit() {
 
     this.EventForm.get('eventType_name')?.setValue(value, { emitEvent: false });
   }
-   changeFilter(value: string) {
+  changeFilter(value: string) {
     this.selectedFilter = value;
 
     switch (value) {
@@ -250,7 +241,7 @@ afterSubmit() {
         break;
     }
   }
-   showActive() {
+  showActive() {
     this.filterMode = 'active';
   }
 

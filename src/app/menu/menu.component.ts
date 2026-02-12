@@ -29,8 +29,8 @@ export class MenuComponent implements OnInit {
   selectedItemId: string | null = null;
   selectedItem: any = null;
   menuId!: string;
-  filterMode: 'active' | 'inactive' | 'all' = 'all';
-  selectedFilter = 'All';
+  filterMode: 'active' | 'inactive' | 'all' = 'active';
+  selectedFilter = 'active';
   isEdit = false;
   filteredItems: any;
 
@@ -45,11 +45,11 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
     const eventData = localStorage.getItem('a');
 
-if (eventData) {
-  const eventObj = JSON.parse(eventData);
-  this.menuId = eventObj._id;
-  console.log('menuId:', this.menuId);
-}
+    if (eventData) {
+      const eventObj = JSON.parse(eventData);
+      this.menuId = eventObj._id;
+      console.log('menuId:', this.menuId);
+    }
     this.loadCategories();
 
     this.initializeForm();
@@ -176,7 +176,7 @@ if (eventData) {
       name: '',
       categoryId: '',
       status: 'active',
-      admin_id: this.menuId
+      admin_id: this.menuId,
     });
 
     this.selectedItemId = null;
@@ -231,7 +231,7 @@ if (eventData) {
       return this.categories.filter((c) => c.status === 'inactive');
     }
 
-    return this.categories; 
+    return this.categories;
   }
 
   changeFilter(value: string) {

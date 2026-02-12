@@ -6,26 +6,31 @@ import { QrmenuService } from '../qrmenu.service';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule,RouterModule,FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './orders.component.html',
-  styleUrl: './orders.component.scss'
+  styleUrl: './orders.component.scss',
 })
 export class OrdersComponent implements OnInit {
-orderId!: string;
-orders: any[] = [];
-loading = false;
+  orderId!: string;
+  orders: any[] = [];
+  loading = false;
 
-constructor(private router: Router, private fb: FormBuilder, private api: QrmenuService, private cd: ChangeDetectorRef){}
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private api: QrmenuService,
+    private cd: ChangeDetectorRef,
+  ) {}
   ngOnInit(): void {
     const orderData = localStorage.getItem('a');
-    if(orderData){
-    const orderObj = JSON.parse(orderData);
-    this.orderId = orderObj._id;
-    console.log('orderId', this.orderId);
+    if (orderData) {
+      const orderObj = JSON.parse(orderData);
+      this.orderId = orderObj._id;
+      console.log('orderId', this.orderId);
     }
-    this.Orders()
+    this.Orders();
   }
-   Orders() {
+  Orders() {
     this.loading = true;
     this.api.getOrders().subscribe({
       next: (res: any) => {
@@ -39,5 +44,4 @@ constructor(private router: Router, private fb: FormBuilder, private api: Qrmenu
       },
     });
   }
-
 }

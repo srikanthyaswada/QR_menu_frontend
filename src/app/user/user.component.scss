@@ -315,8 +315,8 @@
 .page-container {
   position: relative;
   min-height: 100vh;
-  background-image: url('/images/qr_menu_bg.png');
-  background-size: cover;
+  // background-image: url('/images/qr_menu_bg.png');
+  // background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
@@ -334,8 +334,8 @@
 
 
 .navbar {
-  height: 56px;
-  background: #f4c197f6;
+  height: auto;
+  background: red;
   display: flex;
   align-items: center;
   padding: 0 16px;
@@ -394,7 +394,7 @@
 .page-center {
   position: absolute;
    z-index: 2;  
-  top: 210px;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -403,7 +403,7 @@
 }
 
 .menu-card {
-  width: 80%;
+  width: 90%;
   max-height: 50vh;
   overflow-y: auto;
   background: #fff;
@@ -413,7 +413,7 @@
 }
 
 .categories-container {
-  column-count: 6;
+  column-count: 7;
   column-gap: 18px;
 }
 
@@ -556,7 +556,7 @@
   bottom: 0;
   width: 100%;
   height: 70px;
-  background: #eb9955f6;
+  background: red;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -581,17 +581,15 @@
 // 
 .menu-header {
   display: grid;
-  grid-template-columns: 1fr auto 1fr; 
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 8px 15px;
-  // background: #fff;
-  // border-bottom: 1px solid #ddd;
-  
+  padding: 6px 16px;
 }
+
 
 /* Left & Right */
 .contact {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .left-contact {
@@ -601,61 +599,66 @@
 .right-contact {
   text-align: right;
 }
+// @media (max-width: 576px) {
+//   .menu-header {
+//     display: flex;
 
+//     text-align: center;
+//     gap: 10px;
+//   }
+
+//   .menu-title {
+//     order: -1;
+
+//     .title-text {
+//       font-size: 18px;
+//     }
+//   }
+
+//   .left-contact,
+//   .right-contact {
+//     text-align: center;
+//   }
+// }
 /* Center Title */
 .menu-title {
   text-align: center;
 
   .title-text {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0px;
   }
 
   .title-subtext {
-    font-size: 12px;
+    font-size: 8px;
     color: black;
   }
 }
 
 /* Text styles */
 .person-name {
-  font-weight: 600;
-  color: black;
+  font-weight: 500;
+  color: red;
 }
 
 .person-role {
-  font-size: 12px;
-  color: black;
+  font-size: 10px;
+  color: grey;
 }
 
 .person-phone {
-  font-size: 13px;
-  margin-top: 2px;
+  font-size: 10px;
+  margin-top: 0px;
 }
 
 
 
-
-
-@media (max-width: 768px) {
-  .menu-header {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
-  }
-
-  .menu-title {
-    order: -1;
-
-    .title-text {
-      font-size: 18px;
-    }
-  }
-
-  .left-contact,
-  .right-contact {
-    text-align: center;
-  }
+.tagline {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 200;   
+  font-size: 12px;
+  letter-spacing: 1px;
 }
+
+
