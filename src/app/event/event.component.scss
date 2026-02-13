@@ -1,5 +1,5 @@
 .table-scroll-wrapper {
-  max-height: 300px;
+  max-height: 500px;
   overflow-y: auto;
 }
 
@@ -7,4 +7,7 @@
 .table-scroll-wrapper thead th {
   position: static !important;
   background-color: #d1e7dd;
+}
+.td div {
+  min-width: 80px;
 }

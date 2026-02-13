@@ -12,6 +12,7 @@ import { OrdersComponent } from './orders/orders.component';
 
 export const routes: Routes = [
   { path: '', component: AdminLoginComponent },
+{ path: 'login', component: AdminLoginComponent },
   {
     path: 'dashboard',
     component: AdminDashboardComponent,

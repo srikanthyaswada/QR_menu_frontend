@@ -36,7 +36,7 @@ export class AdminProfileComponent implements OnInit {
 
   ngOnInit(): void {
     const adminData = localStorage.getItem('a');
-  console.log('LOCAL STORAGE DATA:', adminData);
+    console.log('LOCAL STORAGE DATA:', adminData);
     if (adminData) {
       const admin = JSON.parse(adminData);
       this.adminId = admin._id;
@@ -58,7 +58,6 @@ export class AdminProfileComponent implements OnInit {
     this.profileService.getProfile(this.adminId!).subscribe({
       next: (res: any) => {
         console.log('PROFILE RESPONSE:', res);
-
 
         const data = res.data || res;
 

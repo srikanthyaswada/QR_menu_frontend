@@ -1,4 +1,4 @@
-<div class="row border rounded-4 p-4 bg-white shadow-sm">
+<div class="row rounded-3 p-3">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold text-success m-0">Item</h5>
 
@@ -27,7 +27,6 @@
     </div>
   </div>
 
-  
   <div class="col-sm-3">
     <div class="p-3 mb-4">
       <form [formGroup]="menuForm">
@@ -50,7 +49,6 @@
           </div>
         </div>
 
-        
         <div class="mb-3">
           <label class="form-label">Item Name</label>
           <input
@@ -85,7 +83,6 @@
           </div>
         </div>
 
-       
         <button
           type="submit"
           class="btn w-100"
@@ -98,9 +95,8 @@
     </div>
   </div>
 
- 
   <div class="col-sm-9">
-    <div class="table-responsive bg-white p-3 rounded-4 shadow-sm table-scroll-wrapper">
+    <div class="table-responsive  p-3 rounded-4  table-scroll-wrapper">
       <table class="table table-bordered table-hover align-middle">
         <thead class="table-success">
           <tr>
@@ -118,34 +114,33 @@
             <td>{{ c.categoryId?.name }}</td>
             <td>{{ c.name }}</td>
 
-           
             <td>
               <span class="badge" [ngClass]="c.status === 'active' ? 'bg-success' : 'bg-secondary'">
                 {{ c.status === 'active' ? 'Active' : 'Inactive' }}
               </span>
             </td>
 
-          
             <td>
-              <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(c)">
-                <i class="bi bi-pencil-square"></i>
-              </button>
+              <div class="d-flex gap-1 flex-nowrap justify-content-start">
+                <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(c)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
 
-              <button
-                class="btn btn-sm btn-outline-danger"
-                data-bs-toggle="modal"
-                data-bs-target="#deleteModal"
-                (click)="openDeleteModal(c)"
-              >
-                <i class="bi bi-trash"></i>
-              </button>
+                <button
+                  class="btn btn-sm btn-outline-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteModal"
+                  (click)="openDeleteModal(c)"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-   
     <div *ngIf="filteredCategories.length === 0">No data found</div>
   </div>
 </div>

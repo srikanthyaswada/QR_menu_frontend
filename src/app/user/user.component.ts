@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
 import { ToastrService } from 'ngx-toastr';
@@ -22,6 +22,7 @@ export class UserComponent implements OnInit {
   qrImage!: string;
   // a_id: any;
   userId!: string;
+  menuForm!: FormGroup;
 
   constructor(
     private api: QrmenuService,
@@ -32,14 +33,14 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('ghjkl');
-    
+
     const adminData = localStorage.getItem('a');
     console.log('admin data', adminData);
-    
+
     if (adminData) {
       const eventObj = JSON.parse(adminData);
       this.userId = eventObj._id;
-      
+
       console.log('userId:', this.userId);
     }
     //  this.a_id= adminData._id;
@@ -53,9 +54,8 @@ export class UserComponent implements OnInit {
         });
       });
     } else {
-   
     }
-    this.getMenuItems(); 
+    this.getMenuItems();
     this.getEventTypes();
   }
 
@@ -91,7 +91,7 @@ export class UserComponent implements OnInit {
       (err) => console.error('Error fetching menu items:', err),
     );
   }
-  
+
   sendOrder() {
     this.selectedCategories = [];
 
@@ -113,7 +113,14 @@ export class UserComponent implements OnInit {
     this.isModalOpen = false;
   }
 
-  submitOrder() {
+  submitOrder(form: any) {
+    Object.values(form.controls).forEach((control: any) => {
+      control.markAsTouched();
+    });
+
+    if (form.invalid) {
+      return; // stop here → validations show automatically
+    }
     if (
       !this.customer.name ||
       !this.customer.mobile ||
@@ -140,27 +147,22 @@ export class UserComponent implements OnInit {
       eventType: this.customer.eventType,
       venue: this.customer.venue,
       items: itemsPayload,
-      admin_id: this.userId
+      admin_id: this.userId,
     };
 
     this.api.createOrder(payload).subscribe({
       next: () => {
-        
         this.toastr.success('Order placed successfully!');
         this.cd.detectChanges();
-    
       },
-      
+
       error: (err) => {
         console.error('Order error:', err);
         this.toastr.error('Failed to place order.', 'Error');
       },
-      
     });
-            this.isModalOpen = false;
-                    this.resetOrder();
-
-
+    this.isModalOpen = false;
+    this.resetOrder();
   }
 
   resetOrder() {

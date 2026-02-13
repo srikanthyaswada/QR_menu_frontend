@@ -1,15 +1,15 @@
 <div class="container-fluid">
   <!-- NAVBAR -->
-   
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success px-3 fixed-top">
-    <button
-  class="btn btn-success sidebar-toggle"
-  (click)="isSidebarOpen = !isSidebarOpen"
->
-  <i class="bi bi-list fs-4"></i>
-</button>
 
-    <a class="navbar-brand fw-bold text-white" routerLink="/home"> QR MENU </a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg px-3 fixed-top">
+    <button class="btn sidebar-toggle d-lg-none" (click)="isSidebarOpen = !isSidebarOpen">
+      <i class="bi bi-list fs-4"></i>
+    </button>
+
+    <a class="navbar-brand text-white d-flex flex-column" routerLink="/login">
+      <span class="fw-bold fs-4">SREE ANNAPURNA</span>
+      <small class="fw-normal fs-8 ms-4 tagline">CATERERS & EVENTS</small>
+    </a>
 
     <div class="ms-auto dropdown d-flex align-items-center">
       <span class="text-white fw-bold me-2">{{ AdminName }}</span>
@@ -19,7 +19,9 @@
 
       <ul class="dropdown-menu dropdown-menu-end">
         <li>
-          <a class="dropdown-item" routerLink="/admin_profile"> <i class="bi bi-person me-2"></i> Profile </a>
+          <a class="dropdown-item" routerLink="/admin_profile">
+            <i class="bi bi-person me-2"></i> Profile
+          </a>
         </li>
         <li><hr class="dropdown-divider" /></li>
         <li>
@@ -75,14 +77,16 @@
           <i class="bi bi-qr-code-scan me-2"></i> QR Scanner
         </a>
 
-          <a class="btn side-btn text-dark" routerLink="orders" routerLinkActive="active-btn">
+        <a class="btn side-btn text-dark" routerLink="orders" routerLinkActive="active-btn">
           <i class="bi bi-menu-down"></i> Orders
         </a>
       </div>
     </div>
 
-    <div class="col-md-10 p-4">
-      <router-outlet></router-outlet>
+    <div class="col-sm-10 p-4">
+      <div class="card p-2">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
 </div>

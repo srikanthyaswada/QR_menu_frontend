@@ -1,15 +1,18 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-success px-3">
-  <span class="navbar-brand fw-bold body" routerLink="/">QR MENU </span>
+<nav class="navbar navbar-expand-lg navbar-dark bg px-3">
+  <a class="navbar-brand text-dark d-flex flex-column" routerLink="/home">
+    <span class="fw-bold fs-4">SREE ANNAPURNA</span>
+    <small class="fw-normal fs-8 ms-4 tagline">CATERERS & EVENTS</small>
+  </a>
 </nav>
 
-<div
-  class="d-flex justify-content-center align-items-center"
-  style="min-height: calc(100vh - 56px)"
->
-  <div class="card p-8 mt-5">
+<div class="d-flex justify-content-center align-items-center mt-5">
+  <div class="card p-4 mt-5">
     <div class="container p-3">
       <div class="position-fixed top-0 end-0 p-3">
-        <div *ngIf="toastMessage" class="toast align-items-center text-white show" [ngClass]="{
+        <div
+          *ngIf="toastMessage"
+          class="toast align-items-center text-white show"
+          [ngClass]="{
             'bg-success': toastType === 'success',
             'bg-warning': toastType === 'warning',
             'bg-danger': toastType === 'error',
@@ -20,98 +23,82 @@
             <div class="toast-body">
               {{ toastMessage }}
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="toastMessage = null"></button>
+            <button
+              type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              (click)="toastMessage = null"
+            ></button>
           </div>
         </div>
       </div>
-      <h2 class="title mb-3 p-2 text-center fw-bold text-success">Admin Login</h2>
+      <h2 class="title mb-3 p-2 text-center fw-bold text-dark">Admin Login</h2>
       <!-- Form -->
-      <form [formGroup]="AdminForm" class="mb-3">
-        <div class="row mb-3 align-items-center">
-          <label for="username" class="col-sm-3 col-form-label">Username</label>
-          <div class="col-sm-11">
-            <input
-              type="username"
-              id="username"
-              formControlName="username"
-              class="form-control"
-              placeholder="Enter User Name"
-              (input)="onUsernameInput($event)"
-            />
-            <div
-              *ngIf="
-                AdminForm.controls['username']?.touched && AdminForm.controls['username']?.invalid
-              "
+      <form [formGroup]="AdminForm" (ngSubmit)="adminLogin()" class="mb-2">
+        <!-- Username -->
+        <div class="mb-2">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control"
+            placeholder="Enter User Name"
+          />
+
+          <div
+            *ngIf="
+              AdminForm.controls['username']?.touched && AdminForm.controls['username']?.invalid
+            "
+          >
+            <small *ngIf="AdminForm.controls['username']?.errors?.['required']" class="text-danger">
+              User Name is required
+            </small>
+            <small
+              *ngIf="AdminForm.controls['username']?.errors?.['minlength']"
+              class="text-danger"
             >
-              <small
-                *ngIf="AdminForm.controls['username']?.errors?.['required']"
-                class="text-danger"
-                >User Name is required</small
-              >
-              <!-- <small
-                *ngIf="AdminForm.controls['admin_mail']?.errors?.['required']"
-                class="text-danger"
-                >Email is required</small
-              >
-              <small
-                *ngIf="AdminForm.controls['admin_mail']?.errors?.['email']"
-                class="text-danger"
-                >Invalid email format</small
-              > -->
-              <small
-                *ngIf="AdminForm.controls['username']?.errors?.['minlength']"
-                class="text-danger"
-              >
-                Minimum 3 characters
-              </small>
-            </div>
+              Minimum 3 characters
+            </small>
           </div>
         </div>
-        <!-- password -->
-        <div class="row mb-3 align-items-center">
-          <label for="password" class="col-sm-3 col-form-label">Password</label>
-          <div class="col-sm-11">
-            <div class="input-group">
-              <input
-                [type]="showPassword ? 'text' : 'password'"
-                id="password"
-                formControlName="password"
-                class="form-control"
-                placeholder="Enter 6-digit password"
-                (input)="onPasswordInput($event)"
-              />
 
-              <button type="button" class="btn btn1" (click)="togglePassword()">
-                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-              </button>
-            </div>
-            <div *ngIf="
-                AdminForm.controls['password']?.touched && AdminForm.controls['password']?.invalid
-              "
+        <!-- Password -->
+        <div class="mb-2">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              placeholder="Enter 6-digit password"
+            />
+
+            <button type="button" class="btn btn-outline-secondary" (click)="togglePassword()">
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+
+          <div
+            *ngIf="
+              AdminForm.controls['password']?.touched && AdminForm.controls['password']?.invalid
+            "
+          >
+            <small *ngIf="AdminForm.controls['password']?.errors?.['required']" class="text-danger">
+              Password is required
+            </small>
+            <small
+              *ngIf="AdminForm.controls['password']?.errors?.['minlength']"
+              class="text-danger"
             >
-              <small
-                *ngIf="AdminForm.controls['password']?.errors?.['required']"
-                class="text-danger"
-                >Password is required</small
-              >
-              <small
-                *ngIf="AdminForm.controls['password']?.errors?.['minlength']"
-                class="text-danger"
-              >
-                Minimum 6 characters
-              </small>
-            </div>
+              Minimum 6 characters
+            </small>
           </div>
+        </div>
 
-          <div class="text-center mt-4 d-flex gap-3">
-            <button type="button" class="btn btn-success w-75 g-2" (click)="adminLogin()">
-              Login
-            </button>
-
-            <button type="button" class="btn btn-success" routerLink="/">
-              <i class="bi bi-box-arrow-in-left"></i>
-            </button>
-          </div>
+        <!-- Login Button -->
+        <div class="mt-4">
+          <button type="submit" class="btn btn-success w-100">Login</button>
         </div>
       </form>
     </div>

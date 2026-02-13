@@ -1,4 +1,4 @@
-<div class="row border border-1 rounded p-3">
+<div class="row rounded p-3">
   <div class="position-fixed top-0 end-0 p-4">
     <div *ngIf="toastMessage" class="custom-toast" [ngClass]="toastType">
       <div class="d-flex justify-content-between align-items-center">
@@ -7,7 +7,7 @@
       </div>
     </div>
   </div>
-<!-- <div class="border rounded-4 p-4 bg-white shadow-sm"> -->
+  <!-- <div class="border rounded-4 p-4 bg-white shadow-sm"> -->
 
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold text-success m-0">Event</h5>
@@ -29,11 +29,9 @@
     </div>
   </div>
 
-  
   <div class="row align-items-start">
     <div class="col-sm-3">
       <form [formGroup]="EventForm">
-
         <div class="mb-3">
           <label class="form-label">Event Name</label>
           <input
@@ -41,7 +39,7 @@
             class="form-control"
             formControlName="eventType_name"
             placeholder="Enter Event Name"
-             (input)="onCategoryInput($event)"
+            (input)="onCategoryInput($event)"
           />
         </div>
 
@@ -52,23 +50,22 @@
             <option value="inactive">Inactive</option>
           </select>
         </div>
-       <div class="d-flex justify-content-center">
-        <button
-          type="button"
-          class="btn w-100"
-          [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
-          (click)="updateEvent()"
-        >
-          {{ isEdit ? 'Update Event' : 'Add Event' }}
-        </button>
+        <div class="d-flex justify-content-center">
+          <button
+            type="button"
+            class="btn w-80"
+            [ngClass]="isEdit ? 'btn-primary' : 'btn-success'"
+            (click)="updateEvent()"
+          >
+            {{ isEdit ? 'Update Event' : 'Add Event' }}
+          </button>
         </div>
-
       </form>
     </div>
 
     <div class="col-md-9">
-      <div class="table-responsive">
-        <table class="table table-bordered align-middle">
+      <div class="table-responsive table-scroll-wrapper">
+        <table class="table table-bordered align-middle ">
           <thead class="table-success">
             <tr>
               <th>S.No</th>
@@ -85,49 +82,46 @@
               <td>
                 <span
                   class="badge"
-                  [ngClass]="c.status === 'active'
-                    ? 'bg-success'
-                    : 'bg-secondary'"
+                  [ngClass]="c.status === 'active' ? 'bg-success' : 'bg-secondary'"
                 >
                   {{ c.status === 'active' ? 'Active' : 'Inactive' }}
                 </span>
               </td>
               <td>
-                <button class="btn btn-sm btn-outline-primary me-2"
-                        (click)="editEvent(c)">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger"
-                        (click)="deleteEvent(c._id)">
-                  <i class="bi bi-trash"></i>
-                </button>
+                <div class="d-flex gap-1 flex-nowrap justify-content-start">
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="editEvent(c)">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteEvent(c._id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-    <!-- </div> -->
-
+      <!-- </div> -->
+    </div>
   </div>
-</div>
 
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header text-danger">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header text-danger">
-        <h5 class="modal-title">Confirm Delete</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+        <div class="modal-body">
+          Are you sure you want to delete <strong>{{ selectedId?.eventType_name }}</strong
+          >?
+        </div>
 
-      <div class="modal-body">
-        Are you sure you want to delete <strong>{{ selectedId?.eventType_name }}</strong
-        >?
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+        </div>
       </div>
     </div>
   </div>

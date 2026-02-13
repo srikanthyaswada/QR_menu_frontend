@@ -114,7 +114,7 @@ export class AdminLoginComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input) return;
 
-    let value = input.value.replace(/\D/g, ''); 
+    let value = input.value.replace(/\D/g, '');
 
     if (value.length > 6) {
       value = value.substring(0, 6);

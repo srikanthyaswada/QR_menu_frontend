@@ -1,9 +1,14 @@
+.bg{
+  background-color: red;
+}
+
+
 .side-btn {
   text-align: left;
 }
 
 .active-btn {
-  background-color: #198754 !important;
+  background-color: red !important;
   color: white !important;
 }
 
@@ -30,3 +35,13 @@
 
 
 // 
+.tagline {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 200;   
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+
+
+

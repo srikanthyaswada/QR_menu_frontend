@@ -24,7 +24,7 @@ export class AdminCategoryComponent implements OnInit {
   selectedCategory: any = {};
   isEdit = false;
   editCategoryId: string | null = null;
-  selectedFilter: string = 'All';
+  selectedFilter: string = 'Status';
   category = {
     id: null,
     name: '',
@@ -32,7 +32,7 @@ export class AdminCategoryComponent implements OnInit {
   adminId!: string;
   toastMessage: string | null = null;
   toastType: string | undefined;
-  filterMode: 'active' | 'inactive' | 'all' = 'all';
+  filterMode: 'active' | 'inactive' | 'all' = 'active';
   selectedCategoryId: any;
   selectedId: any;
   constructor(
@@ -44,13 +44,13 @@ export class AdminCategoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  const adminData = localStorage.getItem('a');
+    const adminData = localStorage.getItem('a');
 
-  if (adminData) {
-    const adminid = JSON.parse(adminData);
-    this.adminId = adminid._id; 
-     console.log('adminId:', this.adminId);
-  }
+    if (adminData) {
+      const adminid = JSON.parse(adminData);
+      this.adminId = adminid._id;
+      console.log('adminId:', this.adminId);
+    }
     this.categoryForm = this.fb.group({
       name: [
         '',
@@ -61,7 +61,7 @@ export class AdminCategoryComponent implements OnInit {
         ],
       ],
       status: ['active'],
-      admin_id: [this.adminId]
+      admin_id: [this.adminId],
     });
 
     this.getCategories();
@@ -71,8 +71,8 @@ export class AdminCategoryComponent implements OnInit {
       next: (res: any) => {
         console.log('API RESPONSE ', res);
 
-             this.categories = [...res.data];
-             
+        this.categories = [...res.data];
+
         this.cd.detectChanges();
       },
       error: (err) => {
@@ -89,37 +89,36 @@ export class AdminCategoryComponent implements OnInit {
       return this.categories.filter((c) => c.status === 'inactive');
     }
 
-    return this.categories; 
+    return this.categories;
   }
 
-//  addCategory() {
-//   if (this.categoryForm.invalid) return;
+  //  addCategory() {
+  //   if (this.categoryForm.invalid) return;
 
-//   if (!this.adminId) {
-//     this.toastr.error('Admin ID missing');
-//     return;
-//   }
+  //   if (!this.adminId) {
+  //     this.toastr.error('Admin ID missing');
+  //     return;
+  //   }
 
-//   const payload = {
-//     ...this.categoryForm.value,
-//     admin_id: this.adminId  
-//   };
+  //   const payload = {
+  //     ...this.categoryForm.value,
+  //     admin_id: this.adminId
+  //   };
 
-//   console.log('ADD CATEGORY PAYLOAD ', payload);
+  //   console.log('ADD CATEGORY PAYLOAD ', payload);
 
-//   this.api.create(payload).subscribe({
-//     next: () => {
-//       this.categoryForm.reset({ status: 'active' });
-//       this.getCategories();
-//       this.toastr.success('Category registered successfully!');
-//     },
-//     error: (err) => {
-//       console.error('Error creating category:', err);
-//       this.toastr.error('Failed to register category.');
-//     },
-//   });
-// }
-
+  //   this.api.create(payload).subscribe({
+  //     next: () => {
+  //       this.categoryForm.reset({ status: 'active' });
+  //       this.getCategories();
+  //       this.toastr.success('Category registered successfully!');
+  //     },
+  //     error: (err) => {
+  //       console.error('Error creating category:', err);
+  //       this.toastr.error('Failed to register category.');
+  //     },
+  //   });
+  // }
 
   showToast(message: string, type: string = 'success') {
     this.toastMessage = message;
@@ -175,42 +174,38 @@ export class AdminCategoryComponent implements OnInit {
           this.toastr.error('Update failed');
         },
       });
-    } 
- else {
-  const payload = {
-    name,
-    status: this.categoryForm.value.status,
-    admin_id: this.adminId, 
-  };
+    } else {
+      const payload = {
+        name,
+        status: this.categoryForm.value.status,
+        admin_id: this.adminId,
+      };
 
-  console.log('ADD CATEGORY PAYLOAD', payload);
+      console.log('ADD CATEGORY PAYLOAD', payload);
 
-  this.api.create(payload).subscribe({
-    next: (res: any) => {
-      this.toastr.success('Category added successfully!');
-      this.afterSubmit();
-    },
-    error: (err) => {
-      console.error('Add category error:', err);
-      this.toastr.error('Add failed');
-    },
-  });
-}
-
+      this.api.create(payload).subscribe({
+        next: (res: any) => {
+          this.toastr.success('Category added successfully!');
+          this.afterSubmit();
+        },
+        error: (err) => {
+          console.error('Add category error:', err);
+          this.toastr.error('Add failed');
+        },
+      });
+    }
   }
-afterSubmit() {
-  this.categoryForm.reset({
-    name: '',
-    status: 'active',
-    admin_id: this.adminId  
-  });
+  afterSubmit() {
+    this.categoryForm.reset({
+      name: '',
+      status: 'active',
+      admin_id: this.adminId,
+    });
 
-  this.isEdit = false;
-  this.editCategoryId = null;
-  this.getCategories();
-   
-}
-
+    this.isEdit = false;
+    this.editCategoryId = null;
+    this.getCategories();
+  }
 
   deleteCategory(cat: any) {
     if (!cat?._id) {
@@ -220,12 +215,12 @@ afterSubmit() {
 
     this.api.delete(cat._id).subscribe({
       next: () => {
-        this.toastr.success('Category moved to Inactive!', 'Success');
+        this.toastr.success('Category moved to Inactive!');
         this.getCategories();
       },
       error: (err) => {
         console.error('Error deleting category:', err);
-        this.toastr.error('Failed to delete category.', 'Error');
+        this.toastr.error('Failed to delete category.');
       },
     });
   }
