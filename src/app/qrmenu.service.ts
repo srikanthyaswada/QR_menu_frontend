@@ -1,12 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QrmenuService {
+   private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
+
+  showSpinner() {
+    this.loadingSubject.next(true);
+  }
+
+  hideSpinner() {
+    this.loadingSubject.next(false);
+  }
+
   baseUrl = 'http://78.142.47.247:3008/api';
   // baseUrl = 'http://localhost:3008/api';
+
 
   constructor(private http: HttpClient) {}
 
@@ -100,5 +113,22 @@ export class QrmenuService {
   // Orders
   getOrders() {
     return this.http.get(`${this.baseUrl}/orders/get`);
+  }
+
+  // Contact Details
+  createContact(data: any){
+    return this.http.post(`${this.baseUrl}/contact/add`, data);
+  }
+
+  getAllContact() {
+    return this.http.get(`${this.baseUrl}/contact/get`);
+  }
+
+  updateContact(id: string, data: any){
+    return this.http.put(`${this.baseUrl}/contact/update/${id}`, data);
+  }
+
+  deleteContactDetails(id: string){
+    return this.http.delete(`${this.baseUrl}/contact/delete/${id}`);
   }
 }

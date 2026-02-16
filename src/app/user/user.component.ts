@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss'], // FIXED
+  styleUrls: ['./user.component.scss'], 
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
@@ -23,6 +23,9 @@ export class UserComponent implements OnInit {
   // a_id: any;
   userId!: string;
   menuForm!: FormGroup;
+  contacts: any[] = [];
+leftContact: any;
+rightContact: any;
 
   constructor(
     private api: QrmenuService,
@@ -32,8 +35,6 @@ export class UserComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('ghjkl');
-
     const adminData = localStorage.getItem('a');
     console.log('admin data', adminData);
 
@@ -57,6 +58,7 @@ export class UserComponent implements OnInit {
     }
     this.getMenuItems();
     this.getEventTypes();
+    this.getContacts();
   }
 
   getEventTypes() {
@@ -92,6 +94,29 @@ export class UserComponent implements OnInit {
     );
   }
 
+getContacts() {
+  this.api.getAllContact().subscribe((res: any) => {
+    console.log("API Response:", res);
+
+    this.contacts = res.data || [];
+
+    const proprietors = this.contacts.filter(
+      c => c.designation?.trim().toLowerCase() === 'proprietor'
+    );
+
+    const planners = this.contacts.filter(
+      c => c.designation?.trim().toLowerCase() === 'event planner'
+    );
+
+    this.leftContact = proprietors[proprietors.length - 1];
+    this.rightContact = planners[planners.length - 1];
+
+    this.cd.detectChanges();   
+  });
+}
+
+
+
   sendOrder() {
     this.selectedCategories = [];
 
@@ -119,7 +144,7 @@ export class UserComponent implements OnInit {
     });
 
     if (form.invalid) {
-      return; // stop here → validations show automatically
+      return; 
     }
     if (
       !this.customer.name ||

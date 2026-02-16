@@ -71,19 +71,20 @@ export class AdminLoginComponent implements OnInit {
         });
       },
 
-      error: (err: any) => {
-        console.error(' admin login failed', err);
+    error: (err: any) => {
+  console.error('admin login failed', err);
 
-        if (err.status === 403) {
-          this.showToast('Your account is inactive. Please contact system admin.', 'warning');
-        } else if (err.status === 401) {
-          this.showToast('Invalid email or password.', 'warning');
-        } else if (err.status === 500) {
-          this.showToast('Server error! Please try again later.', 'warning');
-        } else {
-          this.showToast('Login failed. Please try again.', 'warning');
-        }
-      },
+  if (err.status === 403) {
+    this.toastr.warning('Your account is inactive. Please contact system admin.');
+  } else if (err.status === 401) {
+    this.toastr.warning('Invalid email or password.');
+  } else if (err.status === 500) {
+    this.toastr.warning('Server error! Please try again later.');
+  } else {
+    this.toastr.warning('Login failed. Please try again.');
+  }
+},
+
     });
   }
   togglePassword() {
