@@ -8,7 +8,7 @@
   </nav>
 
   <!-- DETAILS BAR -->
-  <div class="menu-header">
+  <!-- <div class="menu-header">
     <div class="contact left-contact">
       <div class="person-name">Prasad Chanda</div>
       <div class="person-role">Proprietor</div>
@@ -25,8 +25,34 @@
       <div class="person-role">Event Planner</div>
       <div class="person-phone">9842 935 841</div>
     </div>
+  </div> -->
+
+  <div class="menu-header">
+
+  <!-- LEFT SIDE -->
+ <div class="contact left-contact" *ngIf="leftContact">
+
+    <div class="person-name">{{ leftContact.contact_name }}</div>
+    <div class="person-role">{{ leftContact.designation }}</div>
+    <div class="person-phone">{{ leftContact.contact_number }}</div>
   </div>
 
+  <!-- CENTER TITLE -->
+  <div class="menu-title">
+    <div class="title-text">ELABORATE MENU</div>
+    <div class="title-subtext">Make Your Choice...</div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="contact right-contact" *ngIf="rightContact">
+    <div class="person-name">{{ rightContact.contact_name }}</div>
+    <div class="person-role">{{ rightContact.designation }}</div>
+    <div class="person-phone">{{ rightContact.contact_number }}</div>
+  </div>
+
+</div>
+
+  
   <!-- MENU CARD -->
   <div class="page-center">
     <div class="menu-card">
@@ -138,7 +164,7 @@
   </div>
 
   <!-- FOOTER -->
-  <div class="footer-bar">
+  <div class="footer-bar text-white">
     H.NO. 9-1-354, Mamatha Theatre Lane, Bhagathnagar, Karimnagar <br />
     www.annapurnacaterer.in
   </div>

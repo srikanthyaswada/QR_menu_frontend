@@ -9,6 +9,7 @@ import { MenusComponent } from './menus/menus.component';
 import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 import { MenuComponent } from './menu/menu.component';
 import { OrdersComponent } from './orders/orders.component';
+import { ContactDetailsComponent } from './contact-details/contact-details.component';
 
 export const routes: Routes = [
   { path: '', component: AdminLoginComponent },
@@ -23,7 +24,8 @@ export const routes: Routes = [
        {path: 'menus', component: MenusComponent},
       {path: 'event', component: EventComponent}, 
       {path: 'qr', component: QrComponent},
-      {path: 'orders', component: OrdersComponent}
+      {path: 'orders', component: OrdersComponent},
+      {path: 'contact_details', component: ContactDetailsComponent}
     ],
   },
   {path: 'user', component: UserComponent},

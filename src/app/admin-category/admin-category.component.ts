@@ -35,6 +35,7 @@ export class AdminCategoryComponent implements OnInit {
   filterMode: 'active' | 'inactive' | 'all' = 'active';
   selectedCategoryId: any;
   selectedId: any;
+   isLoading: boolean = false;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -65,22 +66,27 @@ export class AdminCategoryComponent implements OnInit {
     });
 
     this.getCategories();
+    
   }
   getCategories() {
+     this.isLoading = true;
     this.api.getAll().subscribe({
       next: (res: any) => {
         console.log('API RESPONSE ', res);
 
         this.categories = [...res.data];
-
+        
         this.cd.detectChanges();
+         this.isLoading = false;
       },
       error: (err) => {
         console.error('API ERROR ', err);
+         this.isLoading = false;
       },
     });
   }
   get filteredCategories() {
+    
     if (this.filterMode === 'active') {
       return this.categories.filter((c) => c.status === 'active');
     }

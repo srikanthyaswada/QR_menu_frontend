@@ -1,1 +1,5 @@
+<div *ngIf="qrService.loading$ | async" class="overlay">
+  <div class="loader"></div>
+</div>
+
 <router-outlet></router-outlet>

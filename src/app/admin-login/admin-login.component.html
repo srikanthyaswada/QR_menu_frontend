@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg px-3">
-  <a class="navbar-brand text-dark d-flex flex-column" routerLink="/home">
+  <a class="navbar-brand text-white d-flex flex-column" routerLink="/home">
     <span class="fw-bold fs-4">SREE ANNAPURNA</span>
     <small class="fw-normal fs-8 ms-4 tagline">CATERERS & EVENTS</small>
   </a>
@@ -36,7 +36,7 @@
       <form [formGroup]="AdminForm" (ngSubmit)="adminLogin()" class="mb-2">
         <!-- Username -->
         <div class="mb-2">
-          <label for="username" class="form-label">Username</label>
+          <label for="username" class="form-label">Admin Name</label>
           <input
             type="text"
             id="username"
