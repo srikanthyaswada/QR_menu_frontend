@@ -75,26 +75,27 @@ export class ContactDetailsComponent implements OnInit {
   getContact() {
     this.api.getAllContact().subscribe({
       next: (res: any) => {
-        this.cd.detectChanges();
+        console.log('Get API Response:', res);
 
-        console.log('Full API Response:', res);
-        console.log('Contacts Data:', res.data);
-        this.contact = res.data || [];
-        // this.api.getAllContact()
-        // this.contact = res.data;
+        // Safe data handling
+        // this.contact = res?.data || res || [];
+        this.contact = res.data;
+
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.toastr.error('Failed to load contacts');
       },
     });
   }
 
   get filteredContact() {
-    if (!this.contact) return [];
-
     if (this.filterMode === 'active') {
-      return this.contact.filter((c) => c.status?.toLowerCase() === 'active');
+      return this.contact.filter((c) => (c.status || 'active').toLowerCase() === 'active');
     }
 
     if (this.filterMode === 'inactive') {
-      return this.contact.filter((c) => c.status?.toLowerCase() === 'inactive');
+      return this.contact.filter((c) => (c.status || '').toLowerCase() === 'inactive');
     }
 
     return this.contact;
@@ -142,6 +143,7 @@ export class ContactDetailsComponent implements OnInit {
       status: this.ContactForm.value.status,
       admin_id: this.contactId,
     };
+    console.log('Payload:', payload);
 
     if (this.isEdit && this.editContactId) {
       this.api.updateContact(this.editContactId, payload).subscribe({
@@ -170,7 +172,7 @@ export class ContactDetailsComponent implements OnInit {
           this.toastr.success('Added successfully');
 
           this.contact.push(res.data);
-
+          this.getContact();
           this.afterSubmit();
         },
         error: () => {
@@ -238,8 +240,8 @@ export class ContactDetailsComponent implements OnInit {
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/^\s/, '');
     if (value !== value.toUpperCase()) {
-    value = value.replace(/\b\w/g, char => char.toUpperCase());
-  }
+      value = value.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
     input.value = value;
   }

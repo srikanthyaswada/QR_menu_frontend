@@ -4,11 +4,12 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { QrmenuService } from '../qrmenu.service';
 import { ToastrService } from 'ngx-toastr';
+import { log } from 'console';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss'], 
+  styleUrls: ['./user.component.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
@@ -24,9 +25,10 @@ export class UserComponent implements OnInit {
   userId!: string;
   menuForm!: FormGroup;
   contacts: any[] = [];
-leftContact: any;
-rightContact: any;
-
+  leftContact: any;
+  rightContact: any;
+  planners: any;
+  proprietors: any;
   constructor(
     private api: QrmenuService,
     private toastr: ToastrService,
@@ -94,28 +96,22 @@ rightContact: any;
     );
   }
 
-getContacts() {
-  this.api.getAllContact().subscribe((res: any) => {
-    console.log("API Response:", res);
+  getContacts() {
+    this.api.getAllContact().subscribe((res: any) => {
+      console.log('API Response:', res);
 
-    this.contacts = res.data || [];
+      this.contacts = res.data || [];
 
-    const proprietors = this.contacts.filter(
-      c => c.designation?.trim().toLowerCase() === 'proprietor'
-    );
+      this.proprietors = this.contacts.filter((c) => c.designation === 'Proprietor');
+      console.log(this.proprietors);
 
-    const planners = this.contacts.filter(
-      c => c.designation?.trim().toLowerCase() === 'event planner'
-    );
+      this.planners = this.contacts.filter((c) => c.designation === 'EventPlanner');
 
-    this.leftContact = proprietors[proprietors.length - 1];
-    this.rightContact = planners[planners.length - 1];
+      console.log(this.planners);
 
-    this.cd.detectChanges();   
-  });
-}
-
-
+      this.cd.detectChanges();
+    });
+  }
 
   sendOrder() {
     this.selectedCategories = [];
@@ -144,7 +140,7 @@ getContacts() {
     });
 
     if (form.invalid) {
-      return; 
+      return;
     }
     if (
       !this.customer.name ||
@@ -198,4 +194,5 @@ getContacts() {
     );
     localStorage.setItem('groupedItems', JSON.stringify(this.groupedItems));
   }
+  
 }

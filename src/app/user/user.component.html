@@ -1,18 +1,22 @@
 <div class="page-container">
-  <!-- HEADER -->
+  <!-- NAVBAR -->
   <nav class="navbar">
-    <a class="navbar-brand text-white d-flex flex-column" routerLink="/home">
-      <span class="fw-bold fs-4">SREE ANNAPURNA</span>
-      <small class="fw-normal fs-8 ms-4 tagline">CATERERS & EVENTS</small>
-    </a>
+    <div class="brand text-center">
+      <img src="/images/navimag1.png" class="elephant" />
+      <div>
+        <div class="brand-name">SREE ANNAPURNA</div>
+        <div class="tagline">CATERERS & EVENTS</div>
+      </div>
+      <img src="/images/navimag1.png" class="elephant mirror" />
+    </div>
   </nav>
 
-  <!-- DETAILS BAR -->
-  <!-- <div class="menu-header">
-    <div class="contact left-contact">
-      <div class="person-name">Prasad Chanda</div>
-      <div class="person-role">Proprietor</div>
-      <div class="person-phone">9603 216 215</div>
+  <!-- HEADER -->
+  <div class="menu-header">
+    <div class="contact left-contact" *ngIf="proprietors.length">
+      <div class="person-name">{{ proprietors[0]?.contact_name }}</div>
+      <div class="person-role">{{ proprietors[0]?.designation }}</div>
+      <div class="person-phone">{{ proprietors[0]?.contact_number }}</div>
     </div>
 
     <div class="menu-title">
@@ -20,151 +24,98 @@
       <div class="title-subtext">Make Your Choice...</div>
     </div>
 
-    <div class="contact right-contact">
-      <div class="person-name">Apoorva Chanda</div>
-      <div class="person-role">Event Planner</div>
-      <div class="person-phone">9842 935 841</div>
+    <div class="contact right-contact" *ngIf="planners.length">
+      <div class="person-name">{{ planners[0]?.contact_name }}</div>
+      <div class="person-role">{{ planners[0]?.designation }}</div>
+      <div class="person-phone">{{ planners[0]?.contact_number }}</div>
     </div>
-  </div> -->
-
-  <div class="menu-header">
-
-  <!-- LEFT SIDE -->
- <div class="contact left-contact" *ngIf="leftContact">
-
-    <div class="person-name">{{ leftContact.contact_name }}</div>
-    <div class="person-role">{{ leftContact.designation }}</div>
-    <div class="person-phone">{{ leftContact.contact_number }}</div>
   </div>
 
-  <!-- CENTER TITLE -->
-  <div class="menu-title">
-    <div class="title-text">ELABORATE MENU</div>
-    <div class="title-subtext">Make Your Choice...</div>
-  </div>
+  <!-- ================= MENU CARD ================= -->
+  <div class="menu-card card">
+    <!-- Card Header -->
+    <div class="menu-card-header card-header">Choose Your Menu Items</div>
 
-  <!-- RIGHT SIDE -->
-  <div class="contact right-contact" *ngIf="rightContact">
-    <div class="person-name">{{ rightContact.contact_name }}</div>
-    <div class="person-role">{{ rightContact.designation }}</div>
-    <div class="person-phone">{{ rightContact.contact_number }}</div>
-  </div>
-
-</div>
-
-  
-  <!-- MENU CARD -->
-  <div class="page-center">
-    <div class="menu-card">
+    <!-- Card Body (Scrollable) -->
+    <div class="menu-card-body">
       <div class="categories-container">
         <div *ngFor="let category of groupedItems | keyvalue" class="category-block">
-          <h6 class="category-title">{{ category.key }}</h6>
+          <div class="category-title">{{ category.key }}</div>
 
-          <div class="items-list">
-            <label *ngFor="let item of category.value" class="menu-item">
-              <input type="checkbox" [(ngModel)]="item.selected" />
-              <span>{{ item.name }}</span>
-            </label>
-          </div>
+          <label *ngFor="let item of category.value" class="menu-item">
+            <input type="checkbox" [(ngModel)]="item.selected" />
+            <span>{{ item.name }}</span>
+          </label>
         </div>
       </div>
+    </div>
 
-      <div class="action-bar">
-        <button class="send-btn" (click)="sendOrder()">Send Order</button>
-      </div>
+    <!-- Card Footer -->
+    <div class="menu-card-footer card-footer">
+      <button class="send-btn" type="button" (click)="sendOrder()">Send Order</button>
     </div>
   </div>
 
-  <!-- Modal for Selected Items -->
-  <div class="modal-backdrop-custom" *ngIf="isModalOpen">
-    <div class="order-modal card p-4 shadow-lg">
-      <h5 class="fw-bold text-success text-center mb-3">Selected Menu Items</h5>
+  <!-- ================= MODAL ================= -->
+  <div class="modal-backdrop-custom" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="order-modal" (click)="$event.stopPropagation()">
+      <h5 class="modal-title">Selected Menu Items</h5>
+
       <form #menuForm="ngForm" (ngSubmit)="submitOrder(menuForm)">
-        <div *ngFor="let cat of selectedCategories" class="mb-3">
-          <h6 class="fw-bold text-primary">{{ cat.name }}</h6>
-          <div *ngFor="let item of cat.items" class="ms-3 mb-1">✔ {{ item.name }}</div>
+        <div *ngFor="let cat of selectedCategories" class="selected-category">
+          <h6>{{ cat.name }}</h6>
+          <div *ngFor="let item of cat.items">✔ {{ item.name }}</div>
         </div>
+
         <hr />
-        <div class="mb-3">
-          <input
-            type="text"
-            class="form-control mb-2"
-            placeholder="Customer Name"
-            name="customerName"
-            [(ngModel)]="customer.name"
-            #customerName="ngModel"
-            required
-            minlength="3"
-          />
-          <small class="text-danger" *ngIf="customerName.touched && customerName.invalid">
-            <span *ngIf="customerName.errors?.['required']">Customer name is required</span>
-            <span *ngIf="customerName.errors?.['minlength']">Minimum 3 characters required</span>
-          </small>
-          <input
-            type="tel"
-            class="form-control mb-2"
-            placeholder="Mobile Number"
-            name="mobile"
-            [(ngModel)]="customer.mobile"
-            pattern="[0-9]{10}"
-            #customerMobile="ngModel"
-            maxlength="10"
-            required
-          />
-          <small class="text-danger" *ngIf="customerMobile.touched && customerMobile.invalid">
-            <span *ngIf="customerMobile.errors?.['required']">Mobile number is required</span>
-          </small>
-          <input
-            type="number"
-            class="form-control mb-2"
-            placeholder="Members"
-            name="members"
-            [(ngModel)]="customer.members"
-            min="1"
-            #customerMembers="ngModel"
-            required
-          />
-          <small class="text-danger" *ngIf="customerMembers.touched && customerMembers.invalid">
-            <span *ngIf="customerMembers.errors?.['required']">Members count is required</span>
-          </small>
-          <select
-            class="form-select mb-2"
-            name="eventType"
-            [(ngModel)]="customer.eventType"
-            #customerEventType="ngModel"
-            required
-          >
-            <option value="">Select Event</option>
-            <option *ngFor="let c of activeEventType" [ngValue]="c._id">
-              {{ c.eventType_name }}
-            </option>
-          </select>
-          <small class="text-danger" *ngIf="customerEventType.touched && customerEventType.invalid">
-            Event is required
-          </small>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Venue"
-            name="venue"
-            [(ngModel)]="customer.venue"
-            #customerVenue="ngModel"
-            required
-          />
-          <small class="text-danger" *ngIf="customerVenue.touched && customerVenue.invalid">
-            Venue is required
-          </small>
-        </div>
-        <div class="text-center">
-          <button class="btn btn-success me-2">Submit</button>
-          <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+        <input
+          type="text"
+          placeholder="Customer Name"
+          name="customerName"
+          [(ngModel)]="customer.name"
+          required
+          minlength="3"
+        />
+
+        <input
+          type="tel"
+          placeholder="Mobile Number"
+          name="mobile"
+          [(ngModel)]="customer.mobile"
+          pattern="[0-9]{10}"
+          maxlength="10"
+          required
+        />
+
+        <input
+          type="number"
+          placeholder="Members"
+          name="members"
+          [(ngModel)]="customer.members"
+          min="1"
+          required
+        />
+
+        <select name="eventType" [(ngModel)]="customer.eventType" required>
+          <option value="">Select Event</option>
+          <option *ngFor="let c of activeEventType" [ngValue]="c._id">
+            {{ c.eventType_name }}
+          </option>
+        </select>
+
+        <input type="text" placeholder="Venue" name="venue" [(ngModel)]="customer.venue" required />
+
+        <div class="modal-buttons">
+          <button type="button" class="close-btn" (click)="closeModal()">Close</button>
+          <button type="submit" class="submit-btn">Submit</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- FOOTER -->
-  <div class="footer-bar text-white">
+  <div class="footer-bar">
     H.NO. 9-1-354, Mamatha Theatre Lane, Bhagathnagar, Karimnagar <br />
     www.annapurnacaterer.in
   </div>
