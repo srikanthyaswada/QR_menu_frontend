@@ -237,7 +237,9 @@ export class ContactDetailsComponent implements OnInit {
     value = value.replace(/[^A-Za-z ]/g, '');
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/^\s/, '');
-    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+    if (value !== value.toUpperCase()) {
+    value = value.replace(/\b\w/g, char => char.toUpperCase());
+  }
 
     input.value = value;
   }
