@@ -237,22 +237,25 @@ export class AdminCategoryComponent implements OnInit {
       this.selectedId = null;
     });
   }
-  onCategoryInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input) return;
+onCategoryInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (!input) return;
 
-    let value = input.value;
+  let value = input.value;
 
-    value = value.replace(/[^A-Za-z ]/g, '');
+  value = value.replace(/[^A-Za-z ]/g, '');
 
-    value = value.replace(/\s+/g, ' ');
 
-    value = value.replace(/^\s/, '');
+  value = value.replace(/\s+/g, ' ');
+  value = value.replace(/^\s/, '');
 
-    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
-
-    this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
+  
+  if (value !== value.toUpperCase()) {
+    value = value.replace(/\b\w/g, char => char.toUpperCase());
   }
+
+  this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
+}
   changeFilter(value: string) {
     this.selectedFilter = value;
 

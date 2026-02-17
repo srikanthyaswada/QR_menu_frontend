@@ -261,13 +261,16 @@ export class MenuComponent implements OnInit {
 
   onCategoryInput(event: Event) {
     const input = event.target as HTMLInputElement;
-
+    if (!input) return;
     let value = input.value;
 
     value = value.replace(/[^A-Za-z ]/g, '');
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/^\s/, '');
-    value = value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+     if (value !== value.toUpperCase()) {
+    value = value.replace(/\b\w/g, char => char.toUpperCase());
+  }
+
 
     this.menuForm.get('name')?.setValue(value, { emitEvent: false });
   }
