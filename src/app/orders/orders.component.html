@@ -43,10 +43,25 @@
                 >
                   <div class="accordion-body text-start">
                     <ul class="list-unstyled">
-                      <li *ngFor="let item of order.items; let j = index">
+                      <li *ngFor="let item of getVisibleItems(order, i); let j = index">
                         {{ j + 1 }}. {{ item.menuId?.name }}
                       </li>
                     </ul>
+
+                    <div *ngIf="order.items?.length > 5" class="mt-2">
+                      <a
+                        href="javascript:void(0)"
+                        class="view-more-link"
+                        (click)="toggleViewMore(i)"
+                      >
+                        {{ expandedOrders[i] ? 'View Less...' : 'View More...' }}
+                      </a>
+                    </div>
+                    <!-- <div *ngIf="order.items?.length > 5" class="text-center mt-2">
+                      <button class="btn btn-sm btn-primary" (click)="toggleViewMore(i)">
+                        {{ expandedOrders[i] ? 'View Less' : 'View More' }}
+                      </button>
+                    </div> -->
                   </div>
                 </div>
               </div>

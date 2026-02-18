@@ -35,7 +35,7 @@ export class AdminCategoryComponent implements OnInit {
   filterMode: 'active' | 'inactive' | 'all' = 'active';
   selectedCategoryId: any;
   selectedId: any;
-   isLoading: boolean = false;
+  isLoading: boolean = false;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -66,27 +66,25 @@ export class AdminCategoryComponent implements OnInit {
     });
 
     this.getCategories();
-    
   }
   getCategories() {
-     this.isLoading = true;
+    this.isLoading = true;
     this.api.getAll().subscribe({
       next: (res: any) => {
         console.log('API RESPONSE ', res);
 
         this.categories = [...res.data];
-        
+
         this.cd.detectChanges();
-         this.isLoading = false;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('API ERROR ', err);
-         this.isLoading = false;
+        this.isLoading = false;
       },
     });
   }
   get filteredCategories() {
-    
     if (this.filterMode === 'active') {
       return this.categories.filter((c) => c.status === 'active');
     }
@@ -161,6 +159,15 @@ export class AdminCategoryComponent implements OnInit {
       return;
     }
     const { name, status } = this.categoryForm.value;
+    const exists = this.categories.some(
+      (c: any) =>
+        c.name.trim().toLowerCase() === name.trim().toLowerCase() && c._id !== this.editCategoryId,
+    );
+
+    if (exists) {
+      this.toastr.error('Category already exists');
+      return;
+    }
 
     if (this.isEdit && this.editCategoryId) {
       // UPDATE
@@ -237,25 +244,23 @@ export class AdminCategoryComponent implements OnInit {
       this.selectedId = null;
     });
   }
-onCategoryInput(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input) return;
+  onCategoryInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input) return;
 
-  let value = input.value;
+    let value = input.value;
 
-  value = value.replace(/[^A-Za-z ]/g, '');
+    value = value.replace(/[^A-Za-z ]/g, '');
 
+    value = value.replace(/\s+/g, ' ');
+    value = value.replace(/^\s/, '');
 
-  value = value.replace(/\s+/g, ' ');
-  value = value.replace(/^\s/, '');
+    if (value !== value.toUpperCase()) {
+      value = value.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
-  
-  if (value !== value.toUpperCase()) {
-    value = value.replace(/\b\w/g, char => char.toUpperCase());
+    this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
   }
-
-  this.categoryForm.get('name')?.setValue(value, { emitEvent: false });
-}
   changeFilter(value: string) {
     this.selectedFilter = value;
 

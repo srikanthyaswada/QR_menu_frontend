@@ -111,6 +111,12 @@ export class MenuComponent implements OnInit {
   }
 
   createMenu(payload: any) {
+    const exists = this.categories.some((c) => c.name.toLowerCase() === payload.name.toLowerCase());
+
+    if (exists) {
+      this.toastr.error('Menu item already exists');
+      return;
+    }
     this.api.menucreate(payload).subscribe({
       next: (res: any) => {
         const selectedCategory = this.activeCategoryType.find((c) => c._id === res.data.categoryId);
@@ -267,10 +273,9 @@ export class MenuComponent implements OnInit {
     value = value.replace(/[^A-Za-z ]/g, '');
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/^\s/, '');
-     if (value !== value.toUpperCase()) {
-    value = value.replace(/\b\w/g, char => char.toUpperCase());
-  }
-
+    if (value !== value.toUpperCase()) {
+      value = value.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
     this.menuForm.get('name')?.setValue(value, { emitEvent: false });
   }

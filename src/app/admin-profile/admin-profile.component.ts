@@ -44,6 +44,8 @@ export class AdminProfileComponent implements OnInit {
 
     this.profileForm = this.fb.group({
       username: ['', Validators.required],
+      email: ['', Validators.required],
+      phone_number: ['', Validators.required],
       password: ['', Validators.required],
     });
 
@@ -58,11 +60,14 @@ export class AdminProfileComponent implements OnInit {
     this.profileService.getProfile(this.adminId!).subscribe({
       next: (res: any) => {
         console.log('PROFILE RESPONSE:', res);
-
+      console.log("EMAIL:", res.email);
+      console.log("PHONE:", res.phone_number);
         const data = res.data || res;
 
         this.profileForm.patchValue({
           username: data.username,
+          email: data.email,
+          phone_number: data.phone_number,
           password: data.password,
         });
       },

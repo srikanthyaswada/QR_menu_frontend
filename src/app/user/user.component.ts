@@ -66,8 +66,8 @@ export class UserComponent implements OnInit {
   getEventTypes() {
     this.api.getEventTypes().subscribe({
       next: (res: any) => {
-        this.activeEventType = res.data;
-        localStorage.setItem('event', JSON.stringify(res.data));
+        this.activeEventType = res.data.filter((e: any) => e.status === 'active');
+
         this.cd.detectChanges();
       },
       error: (err) => console.error('Error loading event types:', err),
@@ -194,5 +194,4 @@ export class UserComponent implements OnInit {
     );
     localStorage.setItem('groupedItems', JSON.stringify(this.groupedItems));
   }
-  
 }

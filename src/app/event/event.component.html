@@ -14,7 +14,8 @@
 
     <div class="dropdown">
       <button
-        class="btn btn-outline-success dropdown-toggle" style="width: 125px;"
+        class="btn btn-outline-success dropdown-toggle"
+        style="width: 125px"
         type="button"
         data-bs-toggle="dropdown"
       >
@@ -65,7 +66,7 @@
 
     <div class="col-md-9">
       <div class="table-responsive table-scroll-wrapper">
-        <table class="table table-bordered align-middle ">
+        <table class="table table-bordered align-middle">
           <thead class="table-success">
             <tr>
               <th>S.No</th>
@@ -102,11 +103,11 @@
         </table>
       </div>
       <!-- </div> -->
-       <div *ngIf="filteredEvents.length === 0" class="text-center mt-3">
-  <div class="alert alert-info shadow-sm py-3">
-    <i class="bi bi-info-circle"></i> No data found
-  </div>
-</div>
+      <div *ngIf="filteredEvents.length === 0" class="text-center mt-3">
+        <div class="alert alert-info shadow-sm py-3">
+          <i class="bi bi-info-circle"></i> No data found
+        </div>
+      </div>
     </div>
   </div>
 

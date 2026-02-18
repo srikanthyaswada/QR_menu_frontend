@@ -4,7 +4,8 @@
 
     <div class="dropdown">
       <button
-        class="btn btn-outline-success dropdown-toggle" style="width:120px"
+        class="btn btn-outline-success dropdown-toggle"
+        style="width: 120px"
         type="button"
         id="filterDropdown"
         data-bs-toggle="dropdown"
@@ -96,7 +97,7 @@
   </div>
 
   <div class="col-sm-9">
-    <div class="table-responsive  p-3 rounded-4  table-scroll-wrapper">
+    <div class="table-responsive p-3 rounded-4 table-scroll-wrapper">
       <table class="table table-bordered table-hover align-middle">
         <thead class="table-success">
           <tr>
@@ -109,7 +110,6 @@
         </thead>
 
         <tbody>
-          
           <tr *ngFor="let c of filteredCategories; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ c.categoryId?.name }}</td>
@@ -142,11 +142,11 @@
       </table>
     </div>
 
-   <div *ngIf="filteredCategories.length === 0" class="text-center mt-3 ">
-  <div class="alert alert-info shadow-sm py-3">
-    <i class="bi bi-info-circle"></i> No data found
-  </div>
-</div>
+    <div *ngIf="filteredCategories.length === 0" class="text-center mt-3">
+      <div class="alert alert-info shadow-sm py-3">
+        <i class="bi bi-info-circle"></i> No data found
+      </div>
+    </div>
   </div>
 </div>
 

@@ -9,3 +9,13 @@
   position: static !important;
   background-color: #d1e7dd;
 }
+.view-more-link {
+  color: #198754; 
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.view-more-link:hover {
+  text-decoration: underline;
+}
