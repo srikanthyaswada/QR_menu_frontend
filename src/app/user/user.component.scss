@@ -296,9 +296,15 @@
     height: 10vh;
     font-size: 10px;
   }
+  .send-btn {
+     margin-bottom: 2px;
+    width: 50%;
+    margin-top: 2px;
+    height: 80%;
+
+  }
 }
 
-/* ================= MODAL ================= */
 
 .modal-backdrop-custom {
   position: fixed;
