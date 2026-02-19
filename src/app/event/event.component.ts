@@ -136,6 +136,14 @@ export class EventComponent implements OnInit {
       };
 
       console.log('Update Payload:', payload);
+      const exists = this.event.some(
+        (c) => c.name.toLowerCase() === payload.eventType_name.toLowerCase(),
+      );
+
+      if (exists) {
+        this.toastr.error('Menu item already exists');
+        return;
+      }
 
       this.api.updateEvent(payload).subscribe({
         next: () => {
@@ -222,9 +230,9 @@ export class EventComponent implements OnInit {
 
     value = value.replace(/^\s/, '');
 
-     if (value !== value.toUpperCase()) {
-    value = value.replace(/\b\w/g, char => char.toUpperCase());
-  }
+    if (value !== value.toUpperCase()) {
+      value = value.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
     this.EventForm.get('eventType_name')?.setValue(value, { emitEvent: false });
   }

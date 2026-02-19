@@ -32,6 +32,7 @@ export class MenuComponent implements OnInit {
   selectedFilter = 'Status';
   isEdit = false;
   filteredItems: any;
+  groupedData: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -53,6 +54,7 @@ export class MenuComponent implements OnInit {
 
     this.initializeForm();
     this.getMenu();
+      this.groupItemsByCategory();
   }
 
   initializeForm() {
@@ -76,15 +78,32 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  // getMenu() {
+  //   this.api.getmenu().subscribe({
+  //     next: (res: any) => {
+  //       this.categories = [...res.data];
+  //       localStorage.setItem('menu', JSON.stringify(res.data));
+  //       this.cd.detectChanges();
+  //        this.groupItemsByCategory();
+  //     },
+  //   });
+  // }
   getMenu() {
-    this.api.getmenu().subscribe({
-      next: (res: any) => {
-        this.categories = [...res.data];
-        localStorage.setItem('menu', JSON.stringify(res.data));
-        this.cd.detectChanges();
-      },
-    });
-  }
+  this.api.getmenu().subscribe({
+    next: (res: any) => {
+      // Normalize status to lowercase string
+      this.categories = res.data.map((item: any) => ({
+        ...item,
+        status: item.status?.toString().toLowerCase(),
+      }));
+
+      localStorage.setItem('menu', JSON.stringify(this.categories));
+      this.groupItemsByCategory();
+      this.cd.detectChanges();
+    },
+  });
+}
+
 
   loadCategories() {
     this.api.getCategories().subscribe({
@@ -95,6 +114,25 @@ export class MenuComponent implements OnInit {
       },
     });
   }
+groupItemsByCategory() {
+  const grouped = this.filteredCategories.reduce((acc: any, curr: any) => {
+    const categoryName = curr.categoryId?.name;
+
+    if (!acc[categoryName]) {
+      acc[categoryName] = [];
+    }
+
+    acc[categoryName].push(curr);
+    return acc;
+  }, {});
+
+  this.groupedData = Object.keys(grouped).map((key, index) => ({
+    slNo: index + 1,
+    category: key,
+    items: grouped[key]
+  }));
+}
+
 
   saveCategory() {
     if (this.menuForm.invalid) {
@@ -111,6 +149,12 @@ export class MenuComponent implements OnInit {
   }
 
   createMenu(payload: any) {
+    const exists = this.categories.some((c) => c.name.toLowerCase() === payload.name.toLowerCase());
+
+    if (exists) {
+      this.toastr.error('Menu item already exists');
+      return;
+    }
     this.api.menucreate(payload).subscribe({
       next: (res: any) => {
         const selectedCategory = this.activeCategoryType.find((c) => c._id === res.data.categoryId);
@@ -122,6 +166,10 @@ export class MenuComponent implements OnInit {
         };
 
         this.categories = [newItem, ...this.categories];
+       
+
+    // Update groupedData immediately without refresh
+    this.groupItemsByCategory();
         this.loadCategories();
         this.afterSubmit();
         this.toastr.success('Menu added successfully!');
@@ -155,6 +203,8 @@ export class MenuComponent implements OnInit {
             };
 
             this.categories = [...this.categories];
+
+    this.groupItemsByCategory();
           }
           this.getMenu();
           this.afterSubmit();
@@ -204,6 +254,7 @@ export class MenuComponent implements OnInit {
 
     this.api.menudelete(this.selectedItem._id).subscribe({
       next: () => {
+        this.groupItemsByCategory();
         this.getMenu();
         this.closeModal();
         this.selectedItem = null;
@@ -221,17 +272,22 @@ export class MenuComponent implements OnInit {
     modalInstance?.hide();
   }
 
+  // get filteredCategories() {
+  //   if (this.filterMode === 'active') {
+  //     return this.categories.filter((c) => c.status === 'active');
+  //   }
+
+  //   if (this.filterMode === 'inactive') {
+  //     return this.categories.filter((c) => c.status === 'inactive');
+  //   }
+
+  //   return this.categories;
+  // }
   get filteredCategories() {
-    if (this.filterMode === 'active') {
-      return this.categories.filter((c) => c.status === 'active');
-    }
-
-    if (this.filterMode === 'inactive') {
-      return this.categories.filter((c) => c.status === 'inactive');
-    }
-
-    return this.categories;
-  }
+  if (this.filterMode === 'active') return this.categories.filter(c => c.status === 'active');
+  if (this.filterMode === 'inactive') return this.categories.filter(c => c.status === 'inactive');
+  return this.categories;
+}
 
   changeFilter(value: string) {
     this.selectedFilter = value;
@@ -247,17 +303,23 @@ export class MenuComponent implements OnInit {
         this.showInactive();
         break;
     }
+    this.groupItemsByCategory();
   }
-  showActive() {
-    this.filterMode = 'active';
-  }
+ showActive() {
+  this.filterMode = 'active';
+  this.groupItemsByCategory();
+}
 
-  showInactive() {
-    this.filterMode = 'inactive';
-  }
-  showall() {
-    this.filterMode = 'all';
-  }
+showInactive() {
+  this.filterMode = 'inactive';
+  this.groupItemsByCategory();
+}
+
+showall() {
+  this.filterMode = 'all';
+  this.groupItemsByCategory();
+}
+
 
   onCategoryInput(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -267,10 +329,9 @@ export class MenuComponent implements OnInit {
     value = value.replace(/[^A-Za-z ]/g, '');
     value = value.replace(/\s+/g, ' ');
     value = value.replace(/^\s/, '');
-     if (value !== value.toUpperCase()) {
-    value = value.replace(/\b\w/g, char => char.toUpperCase());
-  }
-
+    if (value !== value.toUpperCase()) {
+      value = value.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
     this.menuForm.get('name')?.setValue(value, { emitEvent: false });
   }

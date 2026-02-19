@@ -4,7 +4,8 @@
 
     <div class="dropdown">
       <button
-        class="btn btn-outline-success dropdown-toggle" style="width:120px"
+        class="btn btn-outline-success dropdown-toggle"
+        style="width: 120px"
         type="button"
         id="filterDropdown"
         data-bs-toggle="dropdown"
@@ -96,8 +97,8 @@
   </div>
 
   <div class="col-sm-9">
-    <div class="table-responsive  p-3 rounded-4  table-scroll-wrapper">
-      <table class="table table-bordered table-hover align-middle">
+    <div class="table-responsive p-3 rounded-4 table-scroll-wrapper">
+      <!-- <table class="table table-bordered table-hover align-middle">
         <thead class="table-success">
           <tr>
             <th>Sl.No</th>
@@ -109,7 +110,6 @@
         </thead>
 
         <tbody>
-          
           <tr *ngFor="let c of filteredCategories; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ c.categoryId?.name }}</td>
@@ -139,14 +139,65 @@
             </td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
+   
+   
+
+
+      <table class="table table-bordered table-hover align-middle">
+  <thead class="table-success">
+    <tr>
+      <th>Sl.No</th>
+      <th>Category</th>
+      <th>Item Name</th>
+      <th>Status</th>
+      <th width="120">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <ng-container *ngFor="let group of groupedData">
+      <tr *ngFor="let item of group.items; let i = index">
+        <td *ngIf="i === 0" [attr.rowspan]="group.items.length">{{ group.slNo }}</td>
+        <td *ngIf="i === 0" [attr.rowspan]="group.items.length">{{ group.category }}</td>
+        <td>{{ item.name }}</td>
+        <td>
+          <span class="badge" [ngClass]="item.status === 'active' ? 'bg-success' : 'bg-secondary'">
+            {{ item.status === 'active' ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+
+        <td>
+          <div class="d-flex gap-1 flex-nowrap justify-content-start">
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(item)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+
+            <button
+              class="btn btn-sm btn-outline-danger"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteModal"
+              (click)="openDeleteModal(item)"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+
+   
+   
+   
     </div>
 
-   <div *ngIf="filteredCategories.length === 0" class="text-center mt-3 ">
-  <div class="alert alert-info shadow-sm py-3">
-    <i class="bi bi-info-circle"></i> No data found
-  </div>
-</div>
+    <div *ngIf="filteredCategories.length === 0" class="text-center mt-3">
+      <div class="alert alert-info shadow-sm py-3">
+        <i class="bi bi-info-circle"></i> No data found
+      </div>
+    </div>
   </div>
 </div>
 

@@ -14,6 +14,7 @@ export class OrdersComponent implements OnInit {
   orderId!: string;
   orders: any[] = [];
   loading = false;
+  expandedOrders: { [key: number]: boolean } = {};
 
   constructor(
     private router: Router,
@@ -43,5 +44,13 @@ export class OrdersComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+  toggleViewMore(index: number) {
+    this.expandedOrders[index] = !this.expandedOrders[index];
+  }
+  getVisibleItems(order: any, index: number) {
+    if (!order?.items) return [];
+
+    return this.expandedOrders[index] ? order.items : order.items.slice(0, 5);
   }
 }

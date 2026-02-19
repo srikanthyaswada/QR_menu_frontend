@@ -57,7 +57,14 @@
   <div class="row pt-5 mt-4">
     <div class="sidebar col-md-2 p-4" [class.sidebar-closed]="!isSidebarOpen">
       <div class="d-flex flex-column gap-3 mt-3">
-        <a class="btn side-btn text-dark" routerLink="category" routerLinkActive="active-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Category">
+        <a
+          class="btn side-btn text-dark"
+          routerLink="category"
+          routerLinkActive="active-btn"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="Category"
+        >
           <i class="bi bi-plus-circle me-2"></i> Categories
         </a>
 
@@ -81,7 +88,11 @@
           <i class="bi bi-menu-down"></i> Orders
         </a>
 
-         <a class="btn side-btn text-dark" routerLink="contact_details" routerLinkActive="active-btn">
+        <a
+          class="btn side-btn text-dark"
+          routerLink="contact_details"
+          routerLinkActive="active-btn"
+        >
           <i class="bi bi-person-lines-fill"></i> Contact Details
         </a>
       </div>
