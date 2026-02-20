@@ -65,7 +65,7 @@ export class AdminLoginComponent implements OnInit {
         sessionStorage.setItem('toastType', 'success');
         this.toastr.success('Admin Login Success');
 
-        this.router.navigate(['/dashboard'], {
+        this.router.navigate(['/dashboard/category'], {
           state: { toast: 'User login success' },
           // this.router.navigate(['/dashboard']);
         });
