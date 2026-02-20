@@ -24,7 +24,8 @@ export class AdminCategoryComponent implements OnInit {
   selectedCategory: any = {};
   isEdit = false;
   editCategoryId: string | null = null;
-  selectedFilter: string = 'Status';
+  selectedFilter: string = 'Active';
+  searchTerm: string = '';
   category = {
     id: null,
     name: '',
@@ -85,15 +86,14 @@ export class AdminCategoryComponent implements OnInit {
     });
   }
   get filteredCategories() {
-    if (this.filterMode === 'active') {
-      return this.categories.filter((c) => c.status === 'active');
-    }
+    return this.categories.filter((c) => {
+      const matchesStatus = this.filterMode === 'all' || c.status === this.filterMode;
 
-    if (this.filterMode === 'inactive') {
-      return this.categories.filter((c) => c.status === 'inactive');
-    }
+      const matchesSearch =
+        !this.searchTerm || c.name.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-    return this.categories;
+      return matchesStatus && matchesSearch;
+    });
   }
 
   //  addCategory() {

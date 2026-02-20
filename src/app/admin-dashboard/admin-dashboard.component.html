@@ -60,10 +60,10 @@
         <a
           class="btn side-btn text-dark"
           routerLink="category"
-          routerLinkActive="active-btn"
-          data-bs-toggle="tooltip"
-          data-bs-placement="bottom"
-          title="Category"
+          routerLinkActive="active-btn shadow active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          #rla="routerLinkActive"
+          [class.active-btn]="rla.isActive"
         >
           <i class="bi bi-plus-circle me-2"></i> Categories
         </a>

@@ -33,3 +33,25 @@
 .td div {
   min-width: 80px;
 }
+.table-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.sticky-header th {
+  position: sticky;
+  top: 0;
+  background-color: #d1e7dd;   
+  z-index: 10;
+}
+.table-scroll-wrapper {
+  height: 400px;       
+  overflow-y: auto;   
+}
+
+.table-scroll-wrapper thead th {
+  position: sticky;
+  top: 0;
+  background: #d1e7dd;  
+  z-index: 100;
+}

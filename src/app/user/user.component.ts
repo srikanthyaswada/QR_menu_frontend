@@ -112,7 +112,6 @@ export class UserComponent implements OnInit {
       this.cd.detectChanges();
     });
   }
-  
 
   sendOrder() {
     this.selectedCategories = [];

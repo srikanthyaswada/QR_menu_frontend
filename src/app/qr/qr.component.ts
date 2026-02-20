@@ -10,13 +10,12 @@ import { QrmenuService } from '../qrmenu.service';
   styleUrl: './qr.component.scss',
 })
 export class QrComponent implements OnInit {
-
   qrImage: string | null = null;
   loading = true;
 
   constructor(
     private api: QrmenuService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -33,14 +32,13 @@ export class QrComponent implements OnInit {
         }
         this.loading = false;
 
-        // 🔥 Force Angular to update view immediately
         this.cd.detectChanges();
       },
       error: (err) => {
         console.error(err);
         this.loading = false;
         this.cd.detectChanges();
-      }
+      },
     });
   }
 }

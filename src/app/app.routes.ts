@@ -5,7 +5,6 @@ import { AdminCategoryComponent } from './admin-category/admin-category.componen
 import { UserComponent } from './user/user.component';
 import { EventComponent } from './event/event.component';
 import { QrComponent } from './qr/qr.component';
-import { MenusComponent } from './menus/menus.component';
 import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 import { MenuComponent } from './menu/menu.component';
 import { OrdersComponent } from './orders/orders.component';
@@ -13,7 +12,7 @@ import { ContactDetailsComponent } from './contact-details/contact-details.compo
 
 export const routes: Routes = [
   { path: '', component: AdminLoginComponent },
-{ path: 'login', component: AdminLoginComponent },
+  { path: 'login', component: AdminLoginComponent },
   {
     path: 'dashboard',
     component: AdminDashboardComponent,
@@ -21,14 +20,12 @@ export const routes: Routes = [
       { path: '', component: AdminCategoryComponent },
       { path: 'category', component: AdminCategoryComponent },
       { path: 'menu', component: MenuComponent },
-       {path: 'menus', component: MenusComponent},
-      {path: 'event', component: EventComponent}, 
-      {path: 'qr', component: QrComponent},
-      {path: 'orders', component: OrdersComponent},
-      {path: 'contact_details', component: ContactDetailsComponent}
+      { path: 'event', component: EventComponent },
+      { path: 'qr', component: QrComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'contact_details', component: ContactDetailsComponent },
     ],
   },
-  {path: 'user', component: UserComponent},
-  {path: 'admin_profile', component:AdminProfileComponent}
- 
+  { path: 'user', component: UserComponent },
+  { path: 'admin_profile', component: AdminProfileComponent },
 ];

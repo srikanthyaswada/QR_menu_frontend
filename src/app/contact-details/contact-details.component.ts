@@ -1,15 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { QrmenuService } from '../qrmenu.service';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contact-details',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './contact-details.component.html',
   styleUrl: './contact-details.component.scss',
 })
@@ -24,7 +29,8 @@ export class ContactDetailsComponent implements OnInit {
   selectedId: any;
 
   filterMode: 'active' | 'inactive' | 'all' = 'active';
-  selectedFilter = 'Status';
+  selectedFilter = 'Active';
+  searchTerm: string = '';
 
   toastMessage: string | null = null;
   toastType: string | undefined;
@@ -90,15 +96,25 @@ export class ContactDetailsComponent implements OnInit {
   }
 
   get filteredContact() {
+    let filtered = this.contact;
     if (this.filterMode === 'active') {
-      return this.contact.filter((c) => (c.status || 'active').toLowerCase() === 'active');
+      filtered = filtered.filter((c) => (c.status || 'active').toLowerCase() === 'active');
+    } else if (this.filterMode === 'inactive') {
+      filtered = filtered.filter((c) => (c.status || '').toLowerCase() === 'inactive');
     }
 
-    if (this.filterMode === 'inactive') {
-      return this.contact.filter((c) => (c.status || '').toLowerCase() === 'inactive');
+    if (this.searchTerm && this.searchTerm.trim() !== '') {
+      const term = this.searchTerm.toLowerCase();
+
+      filtered = filtered.filter(
+        (c) =>
+          c.contact_name?.toLowerCase().includes(term) ||
+          c.designation?.toLowerCase().includes(term) ||
+          c.contact_number?.toString().includes(term),
+      );
     }
 
-    return this.contact;
+    return filtered;
   }
 
   changeFilter(value: string) {

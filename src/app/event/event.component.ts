@@ -27,8 +27,9 @@ export class EventComponent implements OnInit {
   editEventId: string | null = null;
   selectedId: any;
   filterMode: 'active' | 'inactive' | 'all' = 'active';
-  selectedFilter = 'Status';
+  selectedFilter = 'Active';
   eventId!: string;
+  searchTerm: string = '';
   // isSubmitting = false;
 
   // event = {
@@ -168,15 +169,21 @@ export class EventComponent implements OnInit {
   }
 
   get filteredEvents() {
+    let data = this.event;
+
     if (this.filterMode === 'active') {
-      return this.event.filter((c) => c.status === 'active');
+      data = data.filter((c) => c.status === 'active');
+    } else if (this.filterMode === 'inactive') {
+      data = data.filter((c) => c.status === 'inactive');
     }
 
-    if (this.filterMode === 'inactive') {
-      return this.event.filter((c) => c.status === 'inactive');
+    if (this.searchTerm && this.searchTerm.trim() !== '') {
+      const term = this.searchTerm.toLowerCase();
+
+      data = data.filter((c) => c.eventType_name?.toLowerCase().includes(term));
     }
 
-    return this.event;
+    return data;
   }
 
   afterSubmit() {

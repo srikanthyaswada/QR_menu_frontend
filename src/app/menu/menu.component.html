@@ -2,29 +2,38 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold text-success m-0">Item</h5>
 
-    <div class="dropdown">
-      <button
-        class="btn btn-outline-success dropdown-toggle"
-        style="width: 120px"
-        type="button"
-        id="filterDropdown"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        {{ selectedFilter }}
-      </button>
+    <div class="d-flex align-items-center gap-3" style="margin-right: 5%">
+      <input
+        type="text"
+        class="form-control"
+        style="width: 220px"
+        placeholder="Search.."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="groupItemsByCategory()"
+      />
 
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <button class="dropdown-item" (click)="changeFilter('All')">All</button>
-        </li>
-        <li>
-          <button class="dropdown-item" (click)="changeFilter('Active')">Active</button>
-        </li>
-        <li>
-          <button class="dropdown-item" (click)="changeFilter('Inactive')">Inactive</button>
-        </li>
-      </ul>
+      <span class="fw-semibold text-muted mb-0">STATUS:</span>
+
+      <div class="dropdown">
+        <button
+          class="btn btn-outline-success dropdown-toggle"
+          style="width: 120px"
+          type="button"
+          id="filterDropdown"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {{ selectedFilter }}
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><button class="dropdown-item" (click)="changeFilter('All')">All</button></li>
+          <li><button class="dropdown-item" (click)="changeFilter('Active')">Active</button></li>
+          <li>
+            <button class="dropdown-item" (click)="changeFilter('Inactive')">Inactive</button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -35,6 +44,7 @@
           <label class="form-label">Category</label>
           <select class="form-select" formControlName="categoryId" class="form-select">
             <option value="">Select Category</option>
+
             <option *ngFor="let c of activeCategoryType" [value]="c._id">
               {{ c.name }}
             </option>
@@ -140,57 +150,53 @@
           </tr>
         </tbody>
       </table> -->
-   
-   
 
+      <table class="table table-bordered align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>Sl.No</th>
+            <th>Category</th>
+            <th>Item Name</th>
+            <th>Status</th>
+            <th width="120">Actions</th>
+          </tr>
+        </thead>
 
-      <table class="table table-bordered table-hover align-middle">
-  <thead class="table-success">
-    <tr>
-      <th>Sl.No</th>
-      <th>Category</th>
-      <th>Item Name</th>
-      <th>Status</th>
-      <th width="120">Actions</th>
-    </tr>
-  </thead>
+        <tbody>
+          <ng-container *ngFor="let group of groupedData">
+            <tr *ngFor="let item of group.items; let i = index">
+              <td *ngIf="i === 0" [attr.rowspan]="group.items.length">{{ group.slNo }}</td>
+              <td *ngIf="i === 0" [attr.rowspan]="group.items.length">{{ group.category }}</td>
+              <td>{{ item.name }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="item.status === 'active' ? 'bg-success' : 'bg-secondary'"
+                >
+                  {{ item.status === 'active' ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
 
-  <tbody>
-    <ng-container *ngFor="let group of groupedData">
-      <tr *ngFor="let item of group.items; let i = index">
-        <td *ngIf="i === 0" [attr.rowspan]="group.items.length">{{ group.slNo }}</td>
-        <td *ngIf="i === 0" [attr.rowspan]="group.items.length">{{ group.category }}</td>
-        <td>{{ item.name }}</td>
-        <td>
-          <span class="badge" [ngClass]="item.status === 'active' ? 'bg-success' : 'bg-secondary'">
-            {{ item.status === 'active' ? 'Active' : 'Inactive' }}
-          </span>
-        </td>
+              <td>
+                <div class="d-flex gap-1 flex-nowrap justify-content-start">
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(item)">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
 
-        <td>
-          <div class="d-flex gap-1 flex-nowrap justify-content-start">
-            <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(item)">
-              <i class="bi bi-pencil-square"></i>
-            </button>
-
-            <button
-              class="btn btn-sm btn-outline-danger"
-              data-bs-toggle="modal"
-              data-bs-target="#deleteModal"
-              (click)="openDeleteModal(item)"
-            >
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</table>
-
-   
-   
-   
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                    (click)="openDeleteModal(item)"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
     </div>
 
     <div *ngIf="filteredCategories.length === 0" class="text-center mt-3">

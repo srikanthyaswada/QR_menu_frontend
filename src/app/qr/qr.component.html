@@ -1,20 +1,10 @@
 <div class="center-container">
   <div class="qr-card shadow p-4 text-center">
-
-    <div *ngIf="loading" class="fw-bold text-success">
-      Loading QR...
-    </div>
+    <div *ngIf="loading" class="fw-bold text-success">Loading QR...</div>
 
     <div *ngIf="!loading && qrImage">
-      <img
-        [src]="qrImage"
-        alt="QR Code"
-        width="220"
-        height="220"
-        class="img-fluid"
-      />
+      <img [src]="qrImage" alt="QR Code" width="220" height="220" class="img-fluid" />
       <p class="mt-3 fw-semibold">Scan QR to view menu</p>
     </div>
-
   </div>
 </div>

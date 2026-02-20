@@ -29,11 +29,11 @@ export class MenuComponent implements OnInit {
   selectedItem: any = null;
   menuId!: string;
   filterMode: 'active' | 'inactive' | 'all' = 'active';
-  selectedFilter = 'Status';
+  selectedFilter = 'Active';
   isEdit = false;
   filteredItems: any;
   groupedData: any[] = [];
-
+  searchTerm: string = '';
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -54,7 +54,7 @@ export class MenuComponent implements OnInit {
 
     this.initializeForm();
     this.getMenu();
-      this.groupItemsByCategory();
+    this.groupItemsByCategory();
   }
 
   initializeForm() {
@@ -89,21 +89,19 @@ export class MenuComponent implements OnInit {
   //   });
   // }
   getMenu() {
-  this.api.getmenu().subscribe({
-    next: (res: any) => {
-      // Normalize status to lowercase string
-      this.categories = res.data.map((item: any) => ({
-        ...item,
-        status: item.status?.toString().toLowerCase(),
-      }));
+    this.api.getmenu().subscribe({
+      next: (res: any) => {
+        this.categories = res.data.map((item: any) => ({
+          ...item,
+          status: item.status?.toString().toLowerCase(),
+        }));
 
-      localStorage.setItem('menu', JSON.stringify(this.categories));
-      this.groupItemsByCategory();
-      this.cd.detectChanges();
-    },
-  });
-}
-
+        localStorage.setItem('menu', JSON.stringify(this.categories));
+        this.groupItemsByCategory();
+        this.cd.detectChanges();
+      },
+    });
+  }
 
   loadCategories() {
     this.api.getCategories().subscribe({
@@ -114,25 +112,24 @@ export class MenuComponent implements OnInit {
       },
     });
   }
-groupItemsByCategory() {
-  const grouped = this.filteredCategories.reduce((acc: any, curr: any) => {
-    const categoryName = curr.categoryId?.name;
+  groupItemsByCategory() {
+    const grouped = this.filteredCategories.reduce((acc: any, curr: any) => {
+      const categoryName = curr.categoryId?.name;
 
-    if (!acc[categoryName]) {
-      acc[categoryName] = [];
-    }
+      if (!acc[categoryName]) {
+        acc[categoryName] = [];
+      }
 
-    acc[categoryName].push(curr);
-    return acc;
-  }, {});
+      acc[categoryName].push(curr);
+      return acc;
+    }, {});
 
-  this.groupedData = Object.keys(grouped).map((key, index) => ({
-    slNo: index + 1,
-    category: key,
-    items: grouped[key]
-  }));
-}
-
+    this.groupedData = Object.keys(grouped).map((key, index) => ({
+      slNo: index + 1,
+      category: key,
+      items: grouped[key],
+    }));
+  }
 
   saveCategory() {
     if (this.menuForm.invalid) {
@@ -166,10 +163,9 @@ groupItemsByCategory() {
         };
 
         this.categories = [newItem, ...this.categories];
-       
 
-    // Update groupedData immediately without refresh
-    this.groupItemsByCategory();
+        // Update groupedData immediately without refresh
+        this.groupItemsByCategory();
         this.loadCategories();
         this.afterSubmit();
         this.toastr.success('Menu added successfully!');
@@ -204,7 +200,7 @@ groupItemsByCategory() {
 
             this.categories = [...this.categories];
 
-    this.groupItemsByCategory();
+            this.groupItemsByCategory();
           }
           this.getMenu();
           this.afterSubmit();
@@ -284,10 +280,25 @@ groupItemsByCategory() {
   //   return this.categories;
   // }
   get filteredCategories() {
-  if (this.filterMode === 'active') return this.categories.filter(c => c.status === 'active');
-  if (this.filterMode === 'inactive') return this.categories.filter(c => c.status === 'inactive');
-  return this.categories;
-}
+    let data = this.categories;
+
+    if (this.filterMode === 'active') {
+      data = data.filter((c) => c.status === 'active');
+    } else if (this.filterMode === 'inactive') {
+      data = data.filter((c) => c.status === 'inactive');
+    }
+
+    if (this.searchTerm && this.searchTerm.trim() !== '') {
+      const term = this.searchTerm.toLowerCase();
+
+      data = data.filter(
+        (c) =>
+          c.name?.toLowerCase().includes(term) || c.categoryId?.name?.toLowerCase().includes(term),
+      );
+    }
+
+    return data;
+  }
 
   changeFilter(value: string) {
     this.selectedFilter = value;
@@ -305,21 +316,20 @@ groupItemsByCategory() {
     }
     this.groupItemsByCategory();
   }
- showActive() {
-  this.filterMode = 'active';
-  this.groupItemsByCategory();
-}
+  showActive() {
+    this.filterMode = 'active';
+    this.groupItemsByCategory();
+  }
 
-showInactive() {
-  this.filterMode = 'inactive';
-  this.groupItemsByCategory();
-}
+  showInactive() {
+    this.filterMode = 'inactive';
+    this.groupItemsByCategory();
+  }
 
-showall() {
-  this.filterMode = 'all';
-  this.groupItemsByCategory();
-}
-
+  showall() {
+    this.filterMode = 'all';
+    this.groupItemsByCategory();
+  }
 
   onCategoryInput(event: Event) {
     const input = event.target as HTMLInputElement;

@@ -1,5 +1,4 @@
 <div class="page-container">
-  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="brand text-center">
       <img src="/images/navimag1.png" class="elephant" />
@@ -11,7 +10,6 @@
     </div>
   </nav>
 
-  <!-- HEADER -->
   <div class="menu-header">
     <div class="contact left-contact" *ngIf="proprietors.length">
       <div class="person-name">{{ proprietors[0]?.contact_name }}</div>
@@ -31,12 +29,9 @@
     </div>
   </div>
 
-  
   <div class="menu-card card">
-    <!-- Card Header -->
     <div class="menu-card-header card-header">Choose Your Menu Items</div>
 
-    <!-- Card Body (Scrollable) -->
     <div class="menu-card-body">
       <div class="categories-container">
         <div *ngFor="let category of groupedItems | keyvalue" class="category-block">
@@ -50,13 +45,11 @@
       </div>
     </div>
 
-    <!-- Card Footer -->
     <div class="menu-card-footer card-footer">
       <button class="send-btn" type="button" (click)="sendOrder()">Send Order</button>
     </div>
   </div>
 
- 
   <div class="modal-backdrop-custom" *ngIf="isModalOpen" (click)="closeModal()">
     <div class="order-modal" (click)="$event.stopPropagation()">
       <h5 class="modal-title">Selected Menu Items</h5>
